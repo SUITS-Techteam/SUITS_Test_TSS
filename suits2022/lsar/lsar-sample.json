@@ -1,0 +1,14 @@
+{
+    "time": "HH:MM:SS",
+    "priority_tag": "HIGH",
+    "encoded_location": ["Nxx°xx'xx.xx", "Wxx°xx'xx.xx"],
+    "pnt_source": "SURFACE",
+    "vmc_txt": "status",
+    "tac_sn": "001001",
+    "cntry_code": "366",
+    "homing_dvc_stat": "HOMING",
+    "ret_lnk_stat": "YES",
+    "test_proto": "NON-TEST",
+    "vessel_id": "N/A",
+    "beacon_type": "010"
+}

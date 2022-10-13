@@ -1,0 +1,17 @@
+{
+  "name": "bot",
+  "version": "1.0.0",
+  "description": "A system to test multitenancy of the TSS.",
+  "main": "run.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nick Davis [Metecs]",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.26.0",
+    "cli-table": "^0.3.11",
+    "dotenv": "^16.0.0",
+    "moment": "^2.29.1"
+  }
+}

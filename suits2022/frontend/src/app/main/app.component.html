@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<body class = elegant-color-dark>
+    <html lang="en">
+    <head>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta2/css/all.min.css" integrity="sha512-YWzhKL2whUzgiheMoBFwW8CKV4qpHQAEuvilg9FAn5VJUDwKZZxkJNuGM4XkWuk94WCrrwslk8yWNGmY1EduTA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+
+    <!-- ********************************* HEADER *******************************************-->
+    
+    <div class="col">
+      <div class="col-md-100">
+  
+          <!--Card Primary-->
+          <nav class="navbar elegant-color-dark text-left z-depth-2">
+              <div class="card-body">
+                <div class="row">             
+                  <div class="col-1">
+                    <img src="https://microgravityuniversity.jsc.nasa.gov/img/suits/NASASUITS-logo.png" style="width: 64px; height: 64px;" class="img-fluid float-left" alt="placeholder">
+                  </div>
+                  <div class="col-9">
+                    <span class="d-flex justify-content-center white-text" style="font-size: 2em; margin-top: 10px;"><strong>NASA S.U.I.T.S. | Command Central</strong></span>
+                    <p *ngIf="connErr && connErr !== ''" style="color: yellow; font-size: 1em; text-align: center;"><i class="fa-solid fa-triangle-exclamation"></i> {{connErr}}</p>
+                    <p *ngIf="connErr && connErr !== ''" style="color: yellow; text-align: center;"><small>(Check the Config server path and verify the server is running.)</small></p>
+                  </div>
+                  <div class="col-2">
+                    <img src="https://www.nasa.gov/sites/all/themes/custom/nasatwo/images/nasa-logo.svg" style="width: 64px; height: 64px;" class="img-fluid float-right" alt="placeholder">
+                  </div>
+                </div>
+              </div>
+          </nav>
+      </div>
+    </div>
+
+  <!-- ********************************* HEADER *******************************************-->
+
+<!-- START CONFIG -->
+<div><p style="color: white; margin-left: 15px;"><small>siid:</small> {{user?.siid}} <small>username: </small><span style="color: yellow;">{{user?.name}} </span><small>room: </small><span style="color: yellow;">{{user?.roomName}}</span></p></div>
+
+<!-- END CONFIG -->
+
+<div class="col">
+  <ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="uia-tab" data-bs-toggle="tab" data-bs-target="#uia" type="button" role="tab" aria-controls="uia" aria-selected="false">UIA</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="eva-tab" data-bs-toggle="tab" data-bs-target="#eva" type="button" role="tab" aria-controls="eva" aria-selected="false">EVA</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab" aria-controls="config" aria-selected="false">Config</button>
+    </li>
+  </ul>
+  
+
+<div class="tab-content" id="myTabContent">
+
+  <!-- Home Tab -->
+  <div class="col tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home">
+    <div class="row jumbotron text-center elegant-color">
+      <div class="col-6">
+        <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
+          <div class="row">
+            <div class="col-12">
+              <h3 class="text-center white-text">Command Info</h3>
+              <hr class="my-2 white">
+              <ul class="list-group list-group-flush elegant-color-dark">
+                <div class="list-group" id="userinfo">
+                  <div style="color: white;" class="fw-bold">User</div>
+                  <p *ngIf="!user.registered" style="color: yellow;"><i class="fa-solid fa-triangle-exclamation"></i> User Not Registed</p>
+                  <!-- <li class="list-group-item">SocketID (siid): {{user.siid}}</li> -->
+                  <li class="list-group-item">Username: {{user.name}} - ID: {{user.id}}</li>
+                  <li class="list-group-item">Room: {{user.room}}</li>
+                </div>
+                <div class="list-group" id="userinfo">
+                  <div style="color: white;" class="fw-bold">Connection</div>
+                  <li class="list-group-item">Status: 
+                    <span *ngIf="connErr" style="color: red;">Not Connected</span>
+                    <span *ngIf="!connErr" style="color: green;">Connected at {{lastConnTime}}</span>
+                  </li>
+                  <li class="list-group-item">API URI: {{url}}</li>
+                </div>
+                <div class="list-group" id="userinfo">
+                  <div style="color: white;" class="fw-bold">Available Rooms ({{rooms.length}})</div>
+                  <li class="list-group-item" *ngFor="let room of rooms; let i = index;">{{i}}. {{room.name}}</li>
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
+          <div class="row">
+            <div class="col-12">
+              <h3 class = "text-center white-text"> Clients</h3>
+              <hr class="my-2 white">
+              <div *ngIf="clients.length === 0 || clients === null">
+                <div class="spinner-border text-primary" role="status">                  
+                </div> <span style="color: white;"> Communicating with server</span>
+              </div>
+              <ul class="list-group list-group-flush elegant-color-dark">
+                <div class="list-group" id="clients" *ngFor="let group of clients | keyvalue">
+                  <div style="color: white;" class="fw-bold">Room Group</div>                  
+                  <li class="list-group-item" *ngFor="let client of group.value;">
+                    <span *ngIf="user.siid === client.siid" style="color: yellow;">*name: {{client.username}}</span>
+                    <span *ngIf="user.siid !== client.siid"><strong>Room:</strong> {{client.name}} <strong>User:</strong> {{client.username}}</span>
+                  </li>
+                </div>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UIA TAB -->
+  <!-- ********************************* UIA ELEMENTS *******************************************-->
+	<div class="col tab-pane fade" id="uia" role="tabpanel" aria-labelledby="uia">
+      <div class=" row jumbotron text-center elegant-color">
+        <div class = "col-md-6">
+          <div class = "jumbotron elegant-color-dark " style = "height: 100% "> 
+          <br><br>
+          <h1 class="h1-responsive white-text">UIA Control</h1>
+          <hr class="my-2 white">
+          <br>
+          <span *ngIf="!uiaSimInfo" style="color: yellow;">>>UIA Sim Has Not Been Created! Options Disabled<<</span>
+          <span *ngIf="simState === 'start'" style="color: white;"><i style="color: green;" class="fa fa-play pulse"></i> Sim Running</span>
+          <span *ngIf="simState === 'stop'" style="color: white;"><i style="color: red;" class="fa fa-stop"></i> Sim Stopped</span>
+          <span *ngIf="simState === 'pause'" style="color: white;"><i style="color: #4285f4;" class="fa fa-pause"></i> Sim Paused</span>
+          
+          <br>          
+          <button [attr.disabled]="(!uiaSimInfo || simState === 'pause' || simState === 'start')? true : null" (click)="startUiaSimulation()" style ="width:30%" class="btn success-color btn-lg">START</button>
+          <button [attr.disabled]="(!uiaSimInfo || simState !== 'start' || simState === 'pause')? true : null" (click)="pauseUiaSimulation()" style ="width:30%"class="btn btn-primary btn-lg" role="button">PAUSE  </button>  
+          <br>
+          <button [attr.disabled]="(!uiaSimInfo || simState !== 'start' && simState !== 'pause')? true : null" (click) = "stopUiaSimulation()" style ="width:30%" class="btn btn-danger btn-lg" role="button">STOP</button>
+          <button [attr.disabled]="(!uiaSimInfo || simState !== 'pause')? true : null" (click) = "resumeUiaSimulation()" style ="width:30%" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
+        </div>
+      </div> 
+        
+        <div class = "col-md-6">
+          <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
+            <div class="row">
+              <div class="col-12">
+                <h1 class = "text-center white-text">UIA</h1>
+              </div>
+            </div>             
+
+            <div class="row">
+              <div class="col-3">
+
+                <mwl-gauge #emu1o2gauge
+                  class="rgauge"
+                  [max]="3600"
+                  [dialStartAngle]="120"
+                  [dialEndAngle]="-30"
+                  [value]="uiaState?.oxygen_supp_out1"
+                  [animated]="true"
+                  [animationDuration]="1"
+                >
+                </mwl-gauge>
+                <span style="color: rgb(160, 160, 160); float: left;">EMU1 O2 Pressure</span>
+
+              </div>
+
+              <div class="col-6"></div>
+
+              <div class="col-3">
+                <div class="row">
+                  <div class="row">
+                    <mwl-gauge
+                      [max]="3600"
+                      [dialStartAngle]="120"
+                      [dialEndAngle]="-30"
+                      [value]="uiaState?.oxygen_supp_out2"
+                      [animated]="true"
+                      [animationDuration]="1">
+                    </mwl-gauge>
+                  </div>
+                  <div class="row">
+                    <div style="color: rgb(160, 160, 160);">EMU2 O2 Pressure</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12">
+              <div>  
+                  <br>
+                  <table  class="table text-left grey-text">
+                  <!-- <thead *ngFor = "let uia of uias" > -->
+                  <thead>
+                    <td>Action</td>
+                    <td>Sensor</td>
+                    <td>Status</td>
+                  </thead>
+                  <tbody> 
+                    <tr>
+
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.emu1" (click)="uiaActionControl('emu1', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EMU1</td>
+                      <td>{{uiaState?.emu1}}</td>
+                      <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu1}}</td> -->
+                    </tr>
+
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.emu2" (click)="uiaActionControl('emu2', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EMU2</td>
+                      <td>{{uiaState?.emu2}}</td>
+                      <!-- <td *ngFor = "let uia of uias">{{uiaState?.emu2}}</td> -->
+                    </tr>
+
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.ev1_supply" (click)="uiaActionControl('ev1_supply', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EV1 SUPPLY</td>
+                      <td>{{uiaState?.ev1_supply}}</td>
+                      <!-- <td  *ngFor = "let uia of uias" >{{uiaState?.ev1_supply}}</td> -->
+                    </tr>     
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.ev2_supply" (click)="uiaActionControl('ev2_supply', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EV2 SUPPLY</td>
+                      <td>{{uiaState?.ev2_supply}}</td>
+                      <!-- <td  *ngFor = "let uia of uias" >{{uia.ev2_supply}}</td> -->
+                    </tr>          
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.ev1_waste" (click)="uiaActionControl('ev1_waste', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>EV1 WASTE</td>
+                      <td>{{uiaState?.ev1_waste}}</td>
+                      <!-- <td *ngFor = "let uia of uias" >{{uia.ev1_waste}}</td> -->
+                      </tr>
+
+                      <tr>
+                        <td class="kpi-col-1">
+                          <label class="switch"> 
+                            <input type="checkbox" [ngModel]="uiaData?.ev2_waste" (click)="uiaActionControl('ev2_waste', $event.target.checked)"/>
+                            <span class="slider round"></span>
+                          </label>
+                        </td>
+                        <td>EV2 WASTE</td>
+                        <td>{{uiaState?.ev2_waste}}</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.ev2_waste}}</td> -->
+                      </tr>  
+    
+                      <tr>
+                        <td class="kpi-col-1">
+                          <label class="switch"> 
+                            <input type="checkbox" [ngModel]="uiaData?.emu1_O2" (click)="uiaActionControl('emu1_O2', $event.target.checked)"/>
+                            <span class="slider round"></span>
+                          </label>
+                        </td>
+                        <td>EV1 OXYGEN</td>
+                        <td>{{uiaState?.emu1_O2}}</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.emu1_O2}}</td> -->
+                      </tr> 
+                      
+                      <tr>
+                        <td class="kpi-col-1">
+                          <label class="switch"> 
+                            <input type="checkbox" [ngModel]="uiaData?.emu2_O2" (click)="uiaActionControl('emu2_O2', $event.target.checked)"/>
+                            <span class="slider round"></span>
+                          </label>
+                        </td>
+                        <td>EV2 OXYGEN</td>
+                        <td>{{uiaState?.emu2_O2}}</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.emu2_O2}}</td> -->
+                        </tr>     
+                    <tr>
+                      <td class="kpi-col-1">
+                        <label class="switch"> 
+                          <input type="checkbox" [ngModel]="uiaData?.O2_vent" (click)="uiaActionControl('O2_vent', $event.target.checked)"/>
+                          <span class="slider round"></span>
+                        </label>
+                      </td>
+                      <td>O2 VENT</td>
+                      <td>{{uiaState?.O2_vent}}</td>
+                      <!-- <td *ngFor = "let uia of uias" >{{uia.O2_vent}} </td> -->
+                    </tr>
+                    <tr>
+                        <tr>
+                            <td class="kpi-col-1">
+                              <label class="switch"> 
+                                <input type="checkbox" [ngModel]="uiaData?.depress_pump" (click)="uiaActionControl('depress_pump', $event.target.checked)"/>
+                                <span class="slider round"></span>
+                              </label>
+                            </td>
+                            <td>DEPRESS PUMP</td>
+                            <td>{{uiaState?.depress_pump}}</td>
+                            <!-- <td *ngFor = "let uia of uias" >{{uia.depress_pump}} </td> -->
+                        </tr>
+                    <tr>
+                        <td class="kpi-col-1"></td>
+                        <td>EMU1 O2 PRESSURE</td>
+                        <td>{{uiaState?.oxygen_supp_out1}} psi</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out1}} psi</td> -->
+                      </tr>
+                      <tr>
+                        <td class="kpi-col-1"></td>
+                        <td>EMU2 O2 PRESSURE</td>
+                        <td>{{uiaState?.oxygen_supp_out2}} psi</td>
+                        <!-- <td *ngFor = "let uia of uias" >{{uia.oxygen_supp_out2}} psi</td> -->
+                      </tr>
+                  </tbody> 
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+<!-- END UIA TAB -->
+
+<!-- EVA Tab -->
+<div class="col tab-pane fade" id="eva" role="tabpanel" aria-labelledby="eva">
+  <div class="row jumbotron text-center elegant-color">
+    <div class="col-6">
+      <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
+        <div class="row">
+          <div class="col-12">
+            <h1 class = "text-center white-text">EVA - Controls</h1>
+            <hr class="my-2 white">
+            <div class="row">
+              <div class="col-12">
+                <div class="row">
+
+                  <div class="col-12">
+                    <h3 class="subtitle">Sim Controls</h3>      
+                    
+                    <span *ngIf="!connErr === ''" style="color: yellow;">>>Sim Has Not Been Created! Options Disabled<<</span>
+                    <span *ngIf="evaSimState === 'start'" style="color: white;"><i style="color: green;" class="fa fa-play pulse"></i> Sim Running</span>
+                    <span *ngIf="evaSimState === 'stop'" style="color: white;"><i style="color: red;" class="fa fa-stop"></i> Sim Stopped</span>
+                    <span *ngIf="evaSimState === 'pause'" style="color: white;"><i style="color: #4285f4;" class="fa fa-pause"></i> Sim Paused</span>
+                    <br/>
+
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState === 'pause' || evaSimState === 'start')" (click)="startSimulation()" class="btn success-color btn-lg">START</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' || evaSimState === 'pause')" (click)="pauseSimulation()" class="btn btn-primary btn-lg">PAUSE</button>  
+                    <!-- <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="errFunc()" class="btn warning-color btn-lg">ERROR</button> -->
+                    <br>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'start' && evaSimState !== 'pause')" (click) ="stopSimulation();" class="btn btn-danger btn-lg">STOP</button>
+                    <button role="button" style="width: 25%;" [disabled]="(!connErr === '' || evaSimState !== 'pause')" (click)="resumeSimulation()" class="btn success-color btn-lg" >RESUME </button> 
+                    <!-- <button role="button" style="width: 25%;" [disabled]="(!connErr === '')" (click)="resErr()" class="btn primary-color-dark btn-lg">RESOLVE</button>  -->
+
+                  </div>
+                </div>
+                <br/>
+                <hr class="my-2 white">                
+
+                <ul class="nav nav-tabs" id="evaTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="dcu-tab" data-bs-toggle="tab" data-bs-target="#dcu" type="button" role="tab" aria-controls="dcu" aria-selected="true">DCU Controls</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="error-tab" data-bs-toggle="tab" data-bs-target="#error" type="button" role="tab" aria-controls="error" aria-selected="false">Error Selection</button>
+                  </li>
+                </ul>
+                                  
+                <div class="tab-content" id="myTabContent">
+                <div class="col tab-pane fade show active" id="dcu" role="tabpanel" aria-labelledby="dcu">
+                  <div class="row">                
+                      <div class="col-2"></div>
+                      <div class="col-8 container elegant-color-dark text-right" style= "width: 50%">
+                  
+                        <br/>
+                        <h3 class="subtitle">DCU Controls</h3>
+
+                        <table class="controls-table">
+                          <thead>
+                            
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td class="dcu-label">
+                                Suit Power&nbsp;&nbsp; 
+                              </td>
+                              <td>
+                                <label class="switch float-right">
+                                  <input type="checkbox" (click)="toggleControl('suit_power', $event.target.checked)"/>
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td>
+                                <label class="switch float-left">
+                                  <input type="checkbox" (click)="toggleControl('fan_switch', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;FAN SWITCH</td>       
+                            </tr>
+                            <tr>
+                              <td class="dcu-label">O2 Switch&nbsp;&nbsp;</td>
+                              <td>
+                                <label class="switch float-right">
+                                  <input type="checkbox" (click)="toggleControl('o2_switch', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td>
+                                <label class="switch float-left"> 
+                                  <input type="checkbox"  (click)="toggleControl('rca', $event.target.checked)"/>
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;RCA</td>
+                            </tr>
+                            <tr>
+                              <td class="dcu-label">AUX&nbsp;&nbsp;</td>
+                              <td>
+                                <label class="switch float-right">
+                                  <input type="checkbox" (click)="toggleControl('aux', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td>
+                                <label class="switch float-left">
+                                  <input type="checkbox" (click)="toggleControl('pump', $event.target.checked)">
+                                  <span class="slider round"></span>
+                                </label>
+                              </td>
+                              <td class="dcu-label" style="text-align: left;">&nbsp;&nbsp;PUMP</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                        
+                      </div>    
+                      <div class="col-2"></div>
+                    </div>
+
+                  </div>
+                  
+                  <div class="tab-pane fade" id="error" role="tabpanel" aria-labelledby="error">
+                    <div class="row">                
+                        <div class="col-2"></div>
+                        <div class="col-8 container elegant-color-dark text-right" style= "width: 50%">
+                  
+                          <br/>
+                          <h3 class="subtitle">Error</h3>
+                          <table class="controls-table">
+                            <thead>
+                              
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td class="dcu-label">
+                                  O2 Error&nbsp;&nbsp; 
+                                </td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('o2_error', $event.target.checked)"/>
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>                                
+                              </tr>
+                              
+                              <tr>
+                                <td class="dcu-label">Pump Error&nbsp;&nbsp;</td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('pump_error', $event.target.checked)">
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td class="dcu-label">Power Error&nbsp;&nbsp;</td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('power_error', $event.target.checked)">
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>
+                              </tr>
+
+                              <tr>
+                                <td class="dcu-label">Fan Error&nbsp;&nbsp;</td>
+                                <td>
+                                  <label class="switch float-right">
+                                    <input type="checkbox" (click)="toggleError('fan_error', $event.target.checked)">
+                                    <span class="slider round"></span>
+                                  </label>
+                                </td>
+                              </tr>
+
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+      <div class = "jumbotron elegant-color-dark " style = "height: 100% ">
+        <div class="row">
+          <div class="col-12">
+            <h1 class = "text-center white-text">EVA - State</h1>
+            <hr class="my-2 white">
+            
+            <table class="table text-left grey-text">
+              <thead>
+          <tr class = "white-text">
+                  <th scope="col">Telemetry</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody> 
+                <tr>
+                  <td>EVA Time</td>
+                  <td>{{evaTelem?.timer}}</td>
+                </tr>           
+                <tr>
+                  <td>Primary Oxygen</td>
+                   <td>{{evaTelem?.ox_primary}} %</td>
+                <tr>
+                  <td>Secondary Oxygen</td>
+                  <td>{{evaTelem?.ox_secondary}} %</td>
+                <tr>
+                  <td>Heart Rate</td>
+                  <td>{{evaTelem?.heart_bpm}} bpm</td>
+                </tr>
+                <tr>
+                  <td>Suit Pressure</td>
+                  <td>{{evaTelem?.p_suit}} psia</td>
+                </tr>
+                <tr>
+                  <td>Sub Pressure</td>
+                  <td>{{evaTelem?.p_sub}} psia</td>
+                </tr>
+
+                <tr>
+                  <td>Fan Tachometer </td>
+                  <td>{{evaTelem?.v_fan}} rpm</td>
+                </tr>
+
+                <tr>
+                  <td>O2 Pressure</td>
+                  <td>{{evaTelem?.p_o2}} psia</td>
+                </tr>
+
+                <tr>
+                  <td>O2 Rate</td>
+                  <td>{{evaTelem?.rate_o2}} psi/min</td>
+                </tr>
+                
+                <tr>
+                  <td>Battery Capacity</td>
+                  <td>{{evaTelem?.cap_battery}} amp-hr</td>
+                </tr>
+                <tr>
+                  <td>H2O Gas Pressure</td>
+                  <td>{{evaTelem?.p_h2o_g}} psia</td>
+                </tr>
+                <tr>
+                  <td>H2O Liquid Pressure</td>
+                  <td>{{evaTelem?.p_h2o_l}} psia</td>
+                </tr>
+                <tr>
+                    <td>Temperature</td>
+                    <td>{{evaTelem?.t_sub}} deg F</td>
+                  </tr>
+                <tr>
+                  <td>SOP Pressure</td>
+                  <td>{{evaTelem?.p_sop}} psia</td>
+                </tr>
+                <tr>
+                  <td>SOP Rate</td>
+                  <td>{{evaTelem?.rate_sop}} psi/min</td>
+                </tr>
+                <tr>
+                  <td>Battery Time Left</td>
+                  <td>{{evaTelem?.t_battery}} </td>
+                </tr>
+                <tr>
+                    <td>O2 Time Left</td>
+                    <td>{{evaTelem?.t_oxygen}} </td>
+                  </tr>
+                <tr>
+                  <td>H2O Left</td>
+                  <td>{{evaTelem?.t_water}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- END EVA TAB -->
+
+<!-- Config Tab -->
+<div class="col tab-pane fade" id="config" role="tabpanel" aria-labelledby="config">
+  <div class="row">
+    <div class="row text-center elegant-color">
+      
+        <div class="col">
+          <div class="row">
+            <div class="col-12">
+              <div class="elegant-color-dark">
+              <h3 style="color: white;">Configuration</h3>
+              <hr class="my-2 white">
+  
+              <div class="row">
+                <div class="col-6">
+  
+                  <form style="text-align: center;">
+                    <div class="form-group">
+                      <label style="color: white;" for="username">Username</label>
+                      <input type="text" class="form-control" id="username" placeholder="ex. commander" [(ngModel)]="user.name" [ngModelOptions]="{standalone: true}">
+                    </div>
+                    <div class="form-group">
+                      <label style="color: white;" for="exampleInputEmail1">Commanding Room</label>
+                      <select class="form-select" aria-label="Default select example" [(ngModel)]="user.room" [ngModelOptions]="{standalone: true}">
+                        <option value="null">Choose a room to join</option>
+                        <option *ngFor="let room of rooms; let i = index;" value="{{room.id}}">{{room.name}}</option>                        
+                      </select>
+                      <!-- <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Room Name: ex. alpha" [(ngModel)]="user.room" [ngModelOptions]="{standalone: true}"> -->
+                      <small id="emailHelp" class="form-text text-muted">The room name needs to be updated for each team.</small>
+                    </div>
+                    <div class="form-group">
+                      <input class="form-check-input" type="checkbox" [(ngModel)]="keepSettings" (change)="setKeepSetting()" [ngModelOptions]="{standalone: true}" id="keepSettings">
+                      <label class="form-check-label" style="color: white;" for="keepSettings">
+                        Remember Settings
+                      </label>
+                    </div>
+                    <button type="submit" (click)="updateUser()" class="btn btn-primary">Submit</button>
+                  </form>
+  
+                </div>
+                <div class="col-6">
+                  <form style="text-align: center;">
+                    <div class="form-group">
+                      <label style="color: white;" for="socketUrl">Socket Server URL</label>
+                      <input type="text" class="form-control" id="socketUrl" placeholder="ex. https://localhost:3001">
+                      <small id="emailHelp" class="form-text text-muted">Changing this value could cause loss in connection.</small>
+                    </div>
+                    <button type="button"  class="btn btn-primary">Submit</button>
+                  </form>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          </div>
+        </div>    
+    </div>
+  </div>
+</div>
+<!-- END Config Tab -->
+
+  <!-- ********************************* UIA AND DCU CONTROLLERS *******************************************-->
+<!-- <div class = "col">
+  <nav class=" navbar navbar-expand-lg navbar-dark elegant-color-dark">
+      <a routerLink ="/" class="navbar-brand" href="">CONTROLLERS</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a routerLink ="/uia" class="nav-link"  href="#">UIA CONTROLLER</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink ="/dcu" class="nav-link" href="#">DCU CONTROLLER</a>
+          </li>
+          <li class="nav-item">
+              <a routerLink ="/" class="nav-link" href="#">CLOSE CONTROLLER</a>
+            </li>
+        </ul>
+      </div>
+    </nav>
+  <router-outlet></router-outlet>
+  <app-messages></app-messages>
+  <br><br>
+  </div> -->
+
+  <!-- ********************************* MISSION CONTROL AND SUIT TELEMETRY STREAM *******************************************-->
+
+  	<!-- <div class = "col">
+      <div class="jumbotron text-center elegant-color">
+        <div class = "jumbotron elegant-color-dark" >
+          <h1 class="h1-responsive white-text">Mission Control</h1>
+          <hr class="my-2 white">
+          <br> 
+          <br>
+          <button (click)="startSimulation()"  style ="width:18%" class="btn success-color btn-lg">START</button>
+          <button (click)="pauseSimulation()" style ="width:18%"class="btn btn-primary btn-lg" role="button">PAUSE</button>  
+          <button (click)="errFunc()" style ="width:18%" class="btn warning-color btn-lg" role="button">ERROR</button>
+          <br>
+          <button (click) ="stopSimulation(); refresh() "  routerLink ="/" class="nav-link" href="#" style ="width:18%" class="btn btn-danger btn-lg" role="button">STOP/RESET</button>
+          <button (click)="resumeSimulation()" style ="width:18%" class="btn success-color-dark btn-lg" role="button">RESUME </button> 
+          <button (click)="resErr()" style ="width:18%" class="btn primary-color-dark btn-lg" role="button">RESOLVE</button> 
+          <br><br> -->
+
+      <!-- <div>
+      <input type="text" id = "handhold"  value="">
+      <script>
+          function handHold(){
+            var val = prompt('Enter Handhold Value')
+            document.getElementById("handhold").innerHTML = val
+            console.log(val)
+            return val
+          }
+          </script>
+        <button class="btn btn-primary btn-sm" onclick = "handHold()">Submit</button>
+      <br>
+      </div> -->
+
+      <!-- <div *ngFor="let telem of telems">  
+          <div class = "jumbotron elegant-color-dark" >
+              <h1 class = "text-center white-text">Telemetry Stream</h1>
+              <br><br>    
+            <table class="table text-left grey-text">
+              <thead>
+          <tr class = "white-text">
+                  <th scope="col">Telemetry</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody> 
+                <tr>
+                  <td>EVA Time</td>
+                  <td>{{telem.timer}}</td>
+                </tr>           
+                <tr>
+                  <td>Primary Oxygen</td>
+                   <td>{{telem.ox_primary}} %</td>
+                <tr>
+                  <td>Secondary Oxygen</td>
+                  <td>{{telem.ox_secondary}} %</td>
+                <tr>
+                  <td>Heart Rate</td>
+                  <td>{{telem.heart_bpm}} bpm</td>
+                </tr>
+                <tr>
+                  <td>Suit Pressure</td>
+                  <td>{{telem.p_suit}} psia</td>
+                </tr>
+                <tr>
+                  <td>Sub Pressure</td>
+                  <td>{{telem.p_sub}} psia</td>
+                </tr>
+
+                <tr>
+                  <td>Fan Tachometer </td>
+                  <td>{{telem.v_fan}} rpm</td>
+                </tr>
+
+                <tr>
+                  <td>O2 Pressure</td>
+                  <td>{{telem.p_o2}} psia</td>
+                </tr>
+
+                <tr>
+                  <td>O2 Rate</td>
+                  <td>{{telem.rate_o2}} psi/min</td>
+                </tr>
+                
+                <tr>
+                  <td>Battery Capacity</td>
+                  <td>{{telem.cap_battery}} amp-hr</td>
+                </tr>
+                <tr>
+                  <td>H2O Gas Pressure</td>
+                  <td>{{telem.p_h2o_g}} psia</td>
+                </tr>
+                <tr>
+                  <td>H2O Liquid Pressure</td>
+                  <td>{{telem.p_h2o_l}} psia</td>
+                </tr>
+                <tr>
+                    <td>Temperature</td>
+                    <td>{{telem.t_sub}} deg F</td>
+                  </tr>
+                <tr>
+                  <td>SOP Pressure</td>
+                  <td>{{telem.p_sop}} psia</td>
+                </tr>
+                <tr>
+                  <td>SOP Rate</td>
+                  <td>{{telem.rate_sop}} psi/min</td>
+                </tr>
+                <tr>
+                  <td>Battery Time Left</td>
+                  <td>{{telem.t_battery}} </td>
+                </tr>
+                <tr>
+                    <td>O2 Time Left</td>
+                    <td>{{telem.t_oxygen}} </td>
+                  </tr>
+                <tr>
+                  <td>H2O Left</td>
+                  <td>{{telem.t_water}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div> 
+      </div>
+    </div>
+    </div>-->
+
+  </div>
+</div>
+<!-- END TAB CONTENT -->
+    <!-- Footer -->
+<footer class="page-footer font-small elegant-color">
+
+  <!-- Copyright -->
+  <div class="footer-copyright text-center py-3 ">
+    <a href= "https://microgravityuniversity.jsc.nasa.gov/nasasuits.cfm"><strong>NASA SUITS</strong></a>
+  </div>
+  <!-- Copyright -->
+
+</footer>
+<!-- Footer -->
+
+<script src="../../assets/vendors/gauge.min.js"></script>
+
+
+

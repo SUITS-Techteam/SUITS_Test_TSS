@@ -1,0 +1,9 @@
+{
+    "started_at": "00:00:00",
+    "fan_switch": false,
+    "suit_power": false,
+    "o2_switch": false,
+    "aux": false,
+    "rca": false,
+    "pump": false
+}

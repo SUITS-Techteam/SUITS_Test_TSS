@@ -1,0 +1,179 @@
+.container{ width:100%; }
+
+.align-left{ float: left;width:48%; }
+.align-right{ float: right;width:48%; }
+.clearfix {
+    overflow: auto;
+}
+.pad-left{
+    margin-left: 0px;
+}
+.pad-right{
+    margin-right: 0px;
+}
+
+@-webkit-keyframes pulse {
+    0% {
+      -webkit-box-shadow: 0 0 0 0 rgba(22, 244, 77, 0.4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(6, 138, 39, 0.986);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(9, 80, 24, 0);
+    }
+  }
+  @keyframes pulse {
+    0% {
+      -moz-box-shadow: 0 0 0 0 rgba(22, 244, 77, 0.4);
+      box-shadow: 0 0 0 0 rgba(22, 244, 77, 0.4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(6, 138, 39, 0.986);
+        box-shadow: 0 0 0 10px rgba(6, 138, 39, 0.986);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(9, 80, 24, 0);
+        box-shadow: 0 0 0 0 rgba(9, 80, 24, 0);
+    }
+  }
+
+  .switch {
+	position: relative;
+	display: inline-block;
+	width: 60px;
+	height: 34px;
+  }
+  
+  .switch input { 
+	opacity: 0;
+	width: 0;
+	height: 0;
+  }
+  
+  .slider {
+	position: absolute;
+	cursor: pointer;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgb(253, 71, 71);
+	-webkit-transition: .1s;
+	transition: .1s;
+  }
+  
+  .slider:before {
+	position: absolute;
+	content: "";
+	height: 26px;
+	width: 26px;
+	left: 4px;
+	bottom: 4px;
+	background-color: white;
+	-webkit-transition: .1s;
+	transition: .1s;
+  }
+  
+  input:checked + .slider {
+	background-color: rgb(68, 209, 68);
+  }
+  
+  input:focus + .slider {
+	box-shadow: 0 0 1px #2196f3;
+  }
+  
+  input:checked + .slider:before {
+	-webkit-transform: translateX(26px);
+	-ms-transform: translateX(26px);
+	transform: translateX(26px);
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
+	 border-radius: 34px;
+  }
+  
+  .slider.round:before {
+ 	 border-radius: 50%;
+  }
+
+  .kpi-col-1 {
+    width: 10%;
+  }
+
+  // Gauges
+
+  .emu1kpi {
+    width: 150px;
+    height: auto;
+  }
+
+  mwl-gauge {
+    width: 150px;
+    height: 150px;
+    display: block;
+    padding: 10px;
+  }
+  mwl-gauge > .gauge > .dial {
+    stroke: rgb(50, 155, 224) !important;
+    stroke-width: 4;
+    fill: rgba(0, 0, 0, 0);
+  }
+  // mwl-gauge > .gauge > .value {
+  //   stroke: rgb(47, 227, 255);
+  //   stroke-width: 4;
+  //   fill: rgba(0, 0, 0, 0);
+  // }
+
+  mwl-gauge > .gauge > .value-text {
+    fill: rgb(47, 227, 255);
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 2em;
+  }
+
+  mwl-gauge.rgauge {
+    &.gauge {
+      &.value {
+        fill: rgb(47, 227, 255) !important;
+        stroke:rgb(47, 227, 255) !important;
+      }
+    }
+  }
+
+  .nav-link {
+    color: rgb(219, 219, 219);
+  }
+
+  .list-group-item {
+    background-color: #212121;
+    color:rgb(219, 219, 219);
+    text-align: left;
+    border-color: rgb(219, 219, 219);
+  }
+
+  .fw-bold {
+    text-align: left;
+  }
+
+  .dcu-label {
+    color: rgb(219, 219, 219);
+    text-transform: uppercase;
+  }
+
+  .subtitle {
+    color: rgb(219, 219, 219);
+    text-align: center;
+  }
+
+  .switch {
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+
+  .controls-table {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  

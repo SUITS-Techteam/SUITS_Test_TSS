@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body class = elegant-color-dark>
+	<div class = "col white-text">
+		<div class="jumbotron text-center elegant-color">
+			<div class = "jumbotron elegant-color-dark" >
+		<h1 class="h1-responsive white-text">UIA</h1>
+		<hr class="my-2 white">
+		<br>
+
+
+
+<!--  ********************************* UIA CONTROLLER FUNCTIONS *******************************************
+Determinea the state (true or false) of the on screen controller for the UIA
+ -->
+	<div>
+		<h3>EMU1
+		<label class="switch"> 
+		  <input type="checkbox"  (click)="emuOnOff1()"/>
+		  <span class="slider round"></span>
+		</label> 
+
+		EMU2
+				<label class="switch"> 
+				  <input type="checkbox"  (click)="emuOnOff2()"/>
+				  <span class="slider round"></span>
+				</label> <br><br>
+
+		EV1 SUPPLY 
+		<label class="switch"> 
+		  <input type="checkbox"  (click)="supplyWater1()"/>
+		  <span class="slider round"></span>
+		</label>
+
+		
+		EV2 SUPPLY 
+		<label class="switch"> 
+		  <input type="checkbox"  (click)="supplyWater2()"/>
+		  <span class="slider round"></span>
+		</label>
+
+	<br>
+
+		EV1 WASTE
+		<label class="switch">
+		  <input type="checkbox" (click) ="wasteWater1()">
+		  <span class="slider round"></span>
+		</label>
+ 
+	
+		EV2 WASTE
+		<label class="switch">
+		  <input type="checkbox" (click) ="wasteWater2()">
+		  <span class="slider round"></span>
+		</label>
+ <br><br>
+
+	
+			<h3>EV1 OXYGEN 
+			<label class="switch"> 
+			<input type="checkbox"  (click)="oxygen1()"/>
+			<span class="slider round"></span>
+			</label> 
+
+			<h3>EV2 OXYGEN 
+					<label class="switch"> 
+					<input type="checkbox"  (click)="oxygen2()"/>
+					<span class="slider round"></span>
+					</label>
+					 <br><br>
+			
+			O2 VENT
+			<label class="switch">
+			<input type="checkbox" (click) ="o2Vent()">
+			<span class="slider round"></span>
+			</label>
+			&nbsp;
+
+			DEPRESS PUMP
+			<label class="switch">
+			<input type="checkbox" (click) ="depressPump()">
+			<span class="slider round"></span>
+			</label>
+			&nbsp;
+		 </h3>
+</h3>
+	

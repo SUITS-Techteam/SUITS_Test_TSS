@@ -1,0 +1,32 @@
+.body-style {
+    background-color: rgb(43, 43, 43) !important;
+}
+
+nav {
+    background-color: black;
+}
+
+nav .lsar-logo {
+    margin-left: 10px;
+    width: 100px;
+    height: auto;
+}
+
+.container label {
+    color: whitesmoke;
+}
+
+.map-bg {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    /* z-index: 1; */
+}
+
+.tss-form {
+    position: absolute;
+    top:0px;
+    z-index: 10;
+}

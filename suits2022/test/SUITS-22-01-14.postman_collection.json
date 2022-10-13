@@ -1,0 +1,544 @@
+{
+	"info": {
+		"_postman_id": "a0481cfb-fe1c-43be-8e89-59cbe3224141",
+		"name": "SUITS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "EVASimulation Commands",
+			"item": [
+				{
+					"name": "Engagement",
+					"item": [
+						{
+							"name": "Start Simulation on Room 1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/sim/1/start",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"sim",
+										"1",
+										"start"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stop Simulation on Room 1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/sim/1/stop",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"sim",
+										"1",
+										"stop"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Pause Simulation On Room",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/sim/1/pause",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"sim",
+										"1",
+										"pause"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unpause Simulation on Room 1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/sim/1/unpause",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"sim",
+										"1",
+										"unpause"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Controls",
+					"item": [
+						{
+							"name": "ToggleFan",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simctl/1/fan_switch",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simctl",
+										"1",
+										"fan_switch"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle Suit Power",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simctl/1/suit_power",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simctl",
+										"1",
+										"suit_power"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle O2 Switch",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simctl/1/o2_switch",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simctl",
+										"1",
+										"o2_switch"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle Auxillary",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simctl/1/aux",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simctl",
+										"1",
+										"aux"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle RCA",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simctl/1/rca",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simctl",
+										"1",
+										"rca"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle Pump",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simctl/1/pump",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simctl",
+										"1",
+										"pump"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Failures",
+					"item": [
+						{
+							"name": "Toggle O2 Error",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simfail/1/o2_error",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simfail",
+										"1",
+										"o2_error"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle Pump Error",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simfail/1/pump_error",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simfail",
+										"1",
+										"pump_error"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle Power Error",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simfail/1/power_error",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simfail",
+										"1",
+										"power_error"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Toggle Fan Error",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:8080/api/simulationcontrol/simfail/1/fan_error",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"simulationcontrol",
+										"simfail",
+										"1",
+										"fan_error"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Data Acquisition",
+			"item": [
+				{
+					"name": "Get Current SimulationState by Room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/simulationstate/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"simulationstate",
+								"1"
+							]
+						},
+						"description": "# Get Current Simulation State\n\nThis is the primary request for gathering data from the simulation state. This data changes on a predefined \"tick\" defaulted at 1000ms. However, it is not required that you poll at the same rate of the server.\n\nAs with most SUITS GET requests, the route path requires that you define the room of which you want to receive data.   \n```e.g. /api/simulationstate/<roomid> ```   \n\nfor example; the path below will get the simulation state data for the room \"Alpha\" using its ID 1.   \n``` ex: /api/simulationstate/1 ```"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Rooms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/rooms",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"rooms"
+							]
+						},
+						"description": "# Get Rooms\nGets a JSON object list of all rooms.\n\n* Use this list to get the ID of the room you wish to have a user join from \"Startup and Registration/Register User On Server\""
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users In Room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/users/room/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"room",
+								"1"
+							]
+						},
+						"description": "# Get Users In Room\nReturns a list of all users in the selected room.\nAs with most get requests, this utilizes a router parameter to defined the room id.    \n```e.g. /api/users/room/:id```   \nFor example, the route below gets all users in the room \"Alpha\" using it's id of 1.   \n```ex: /api/users/room/1```"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Startup and Registration",
+			"item": [
+				{
+					"name": "Register User On Server",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"Nick\",\r\n    \"room\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/auth/register",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "# Register User\n## Parameters:\n### Username\nRequires a username _string_ that is greater than 3 characters and can only accept letters, numbers, and underscores.\n### Room\nThe room ID _integer_ of the selected room the user wishes to join.\n* See \"Data Acquisition/Get Rooms\" on how to get a list of available rooms."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "LSAR",
+			"item": [
+				{
+					"name": "Location Create New",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user\": 5,\r\n    \"room\": 1,\r\n    \"latitude\": 0.00,\r\n    \"longitude\": 0.00,\r\n    \"altitude\": 0,\r\n    \"heading\": 0,\r\n    \"speed\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/locations",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"locations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Location Update Existing",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 4,\r\n    \"user\": 5,\r\n    \"room\": 1,\r\n    \"latitude\": 10,\r\n    \"longitude\": 2,\r\n    \"altitude\": 2,\r\n    \"heading\": 0,\r\n    \"speed\": 0,\r\n    \"updatedAt\": \"2022-01-14T22:19:20.381Z\",\r\n    \"createdAt\": \"2022-01-14T22:19:20.381Z\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8080/api/locations/4",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"locations",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Location Get All For Room",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/api/locations/room/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"locations",
+								"room",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Location Get For User ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/locations/user/5",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"locations",
+						"user",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

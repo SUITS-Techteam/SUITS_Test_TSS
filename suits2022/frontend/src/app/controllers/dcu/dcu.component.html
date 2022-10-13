@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+
+</style>
+</head>
+<body class = elegant-color-dark>
+
+
+<!-- ********************************* DCU CONTROLLER FUNCTIONS *******************************************
+Determines the state (true or false) of the on screen controller for the DCU 
+-->
+
+	<div class = "col white-text">
+		<div class="jumbotron text-center elegant-color">
+			<div class = "jumbotron elegant-color-dark" >
+
+		<h1 class="h1-responsive white-text">DCU</h1>
+		<hr class="my-2 white">
+		<br>
+
+
+	<div class="row">
+		<div class="container elegant-color-dark text-right" style= "width: 50%">
+
+		<h3>SUIT POWER</h3>
+		<label class="switch float-right">
+		  <input type="checkbox" (click)="suitPower()"/>
+		  <span class="slider round"></span>
+		</label>
+		<br>	
+		<br>
+		
+			<h3>O2 SWITCH</h3>
+		<label class="switch float-right">
+		  <input type="checkbox" (click) ="o2Switch()">
+		  <span class="slider round"></span>
+		</label>
+		<br>
+		<br>
+		
+			<h3>AUX</h3>
+		<label class="switch float-right"> 
+			<input type="checkbox"  (click)="switch3()"/>
+			<span class="slider round"></span>
+			</label>
+		</div>
+
+		<div class=" container elegant-color-dark text-left" style= "width: 50%" >
+		
+				<h3>FAN SWITCH</h3>
+			<label class="switch float-left">
+			<input type="checkbox" (click) = "fanSwitch()">
+			<span class="slider round"></span>
+			</label>
+			<br>
+			<br>
+		
+				<h3>RCA</h3>
+			<label class="switch float-left"> 
+			  <input type="checkbox"  (click)="switch5()"/>
+			  <span class="slider round"></span>
+			</label>
+			<br><br>
+		
+				<h3>PUMP</h3>
+			<label class="switch float-left">
+			  <input type="checkbox" (click) = "switch4()">
+				<span class="slider round"></span>
+			</label>
+
+			</div>
+			</div>
+			</div>
+		</div>
+		</div>
+
+
+
+
+<!-- <input class="btn" (click)="emuOnOff()"  type="button"
+          [ngClass]="status ? 'btn-success' : 'btn-danger'" 
+		  [value]="status ? 'unmute' : 'mute'"/> -->
+		  
+</body>
+</html> 
