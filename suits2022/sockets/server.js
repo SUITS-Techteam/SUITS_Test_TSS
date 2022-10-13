@@ -22,3 +22,7 @@ wss.on('connection', (ws) => {
 
     ws.send('something');
 });
+
+webServer.listen(process.env.SOCKET_PORT, () => {
+    console.log(`SUITS Socket Server listening on: ${process.env.SOCKET_PORT}`);
+});
