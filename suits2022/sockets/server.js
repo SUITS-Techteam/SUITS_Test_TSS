@@ -31,12 +31,12 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (data) => {
         console.log(`** GOT MESSAGE **`);
-        console.log(data);
-        let parsed = parser.parseMessage(data);
+        console.log(data.toString('utf-8'));
+        // let parsed = parser.parseMessage(data);
 
-        for (const [eventName, eventController] of Object.entries(events)) {
-            console.log(`Event Name: ${eventName}`);
-        }
+        // for (const [eventName, eventController] of Object.entries(events)) {
+        //     console.log(`Event Name: ${eventName}`);
+        // }
 
         // switch(parsed.event) {
         //     case "register":
