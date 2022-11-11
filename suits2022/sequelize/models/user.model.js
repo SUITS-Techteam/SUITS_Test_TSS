@@ -25,6 +25,11 @@ module.exports = (sequelize) => {
 		room: {
 			allowNull: true,
 			type: DataTypes.INTEGER
+		},
+		guid: {
+			allowNull: false,
+			type: DataTypes.STRING,
+			unique: true
 		}
 	});
 };
