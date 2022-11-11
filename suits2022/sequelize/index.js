@@ -28,7 +28,9 @@ const modelDefiners = [
 	require('./models/simulationstate.model'),
 	require('./models/simulationstateUIA.model'),
 	require('./models/simulationUIA.model'),
-	require('./models/user.model')
+	require('./models/user.model'),
+	require('./models/imumsg.model'),
+	require('./models/gpsmsg.model')
 ];
 
 // We define all models according to their files.
