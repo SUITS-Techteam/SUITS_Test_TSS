@@ -17,7 +17,7 @@ class Parser {
     let obj = JSON.parse(data.toString());
 		const imumsg = await models.imumsg.create(obj);
 
-    return imumsg.id;
+    return imumsg;
   }
 
 	//store in db, return db_id for message
@@ -25,7 +25,7 @@ class Parser {
     let obj = JSON.parse(data.toString());
 		const gpsmsg = await models.gpsmsg.create(obj);
 
-    return gpsmsg.id;
+    return gpsmsg;
   }
 }
 

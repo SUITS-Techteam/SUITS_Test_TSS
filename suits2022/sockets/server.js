@@ -13,7 +13,10 @@ const rooms = [];
 
 let parser = new Parser();
 
+const HMD_UPDATE_INTERVAL = 5000; //Milliseconds
 let datenow = Date.now();
+let imu_msgs_array = [];
+let gps_msgs_array = [];
 
 const events = {
     student: require('./controllers')
@@ -29,7 +32,41 @@ wss.on('connection', (ws) => {
     let connMsg = new Event({event: 'connection', payload: connection.id});
     clients.push(connection);
 
+	  // Sent to visionkit?
     ws.send(connMsg.stringifyMessage());
+
+	/*setTimeout(sendDataChunk, HMD_UPDATE_INTERVAL);
+			function sendDataChunk() {
+				let datachunk = {}
+
+				for(let each in imu_msgs_array) {
+
+					let parsedmsg = each[0];
+					let guid = each[1];
+					if( ! (guid in datachunk) ){
+					   datachunk[guid] = {ims: [], gps: []};
+					}
+					datachunk.ims.push(parsedmsg);
+				}
+
+				for(let each in gps_msgs_array) {
+				  let parsedmsg = each[0];
+					let guid = each[1];
+					if( ! (guid in datachunk) ){
+							datachunk[guid] = {ims: [], gps: []};
+					}
+					datachunk.gps.push(parsedmsg);
+				}
+
+				for( key in datachunk) {
+					//TODO send to correct client based on GUID
+					ws.send(datachunk[key]);
+				}
+
+				imu_msgs_array = [];
+				gps_msgs_array = [];
+			}
+		*/
 
     ws.on('message', (data) => {
 			console.log(`** GOT MESSAGE **`);
@@ -37,28 +74,33 @@ wss.on('connection', (ws) => {
 
 			data = JSON.parse(data);
 
-			let parsed;
+			let parsedid;
 			if (data.id === "IMU") {
-					parsed = parser.parseMessageIMU(data.fields);
-				  imu_db_id_array += [ [parsed, guid] ]
+					parsedmsg = parser.parseMessageIMU(data.fields);
+				  //Store message to push and guid/room to push to
+				  imu_msgs_array += [ [parsedmsg, guid] ]
 
-				if ( (Date.now() - datenow ) > 5000 ) {
-				  //Grab all data from DB from db_id_array
-				  //push/emit data to HMD
-					imu_db_id_array = [];
+				/*
+				if ( (Date.now() - datenow ) > HMD_UPDATE_INTERVAL ) {
+				  //TODO Grab or store all data from DB from db_id_array
+				  //TODO push/emit data to HMD
+					imu_msgs_array = [];
 					datenow = Date.now();
-				}
+				}*/
+
 			}
 
 			if( data.id === "GPS") {
-				parsed = parser.parseMessageGPS(data.fields);
-				gps_db_id_array += [ [parsed, guid] ]
-				if ( (Date.now() - datenow ) > 5000 ) {
-				  //Grab all data from DB from db_id_array
-				  //push/emit data to HMD
-					imu_db_id_array = [];
+				parsedmsg = parser.parseMessageGPS(data.fields);
+				gps_msgs_array += [ [parsedmsg, guid] ]
+
+				/*
+				if ( (Date.now() - datenow ) > HMD_UPDATE_INTERVAL ) {
+				  //TODO Grab or store all data from DB from db_id_array
+				  //TODO push/emit data to HMD
+					gps_msgs_array = [];
 					datenow = Date.now();
-				}
+				}*/
 			}
 
 
