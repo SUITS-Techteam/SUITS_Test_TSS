@@ -1,5 +1,6 @@
 import time, sys
 import math
+import json
 import board
 from adafruit_lsm6ds.lsm6dsox import LSM6DSOX as LSM6DS
 from adafruit_lis3mdl import LIS3MDL
@@ -27,7 +28,7 @@ while True:
                'gyro_x':'{0:3.2f}'.format(gyro_x), 'gyro_y':'{0:3.2f}'.format(gyro_y), 'gyro_z':'{0:3.2f}'.format(gyro_z),
                'mag_x':'{0:3.2f}'.format(mag_x), 'mag_y':'{0:3.2f}'.format(mag_y), 'mag_z':'{0:3.2f}'.format(mag_z)}
     
-    print(imuData)
+    print(json.dumps(imuData))
     
     # print(heading)
     # print("Acceleration: X:{0:7.2f}, Y:{1:7.2f}, Z:{2:7.2f} m/s^2".format(*acceleration))
