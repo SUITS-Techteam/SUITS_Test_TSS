@@ -23,6 +23,17 @@ const events = {
     //... add events here
 }
 
+const { models } = require('../sequelize');
+async function getUsers() {
+	const userData = await models.user.findAll();
+	return userData;
+}
+let userlist = [];
+getUsers().then( (users) => {
+	userlist = users;
+	console.log(userlist)
+}).catch(err => {console.log(err)});
+
 wss.on('connection', (ws) => {
     console.log(`*** USER CONNECTED ***`);
     let connection = { id: uuidv4() };
@@ -70,52 +81,48 @@ wss.on('connection', (ws) => {
 
     ws.on('message', (data) => {
 			console.log(`** GOT MESSAGE **`);
-			//console.log(data.toString('utf-8'));
+			data = JSON.parse(data.toString('utf-8'));
 
-			data = JSON.parse(data);
+			let msgtype = data.id;
+			let msgdata = data.fields;
+			let msginfo = data.vkinfo;
 
-			let parsedid;
-			if (data.id === "IMU") {
-					parsedmsg = parser.parseMessageIMU(data.fields);
+			if (msgtype === "IMU") {
+				parser.parseMessageIMU(msgdata, models).then((parsedmsg) => {
+
 				  //Store message to push and guid/room to push to
-				  imu_msgs_array += [ [parsedmsg, guid] ]
+				  imu_msgs_array += [ [parsedmsg, msginfo.Assignment] ];
 
-				/*
-				if ( (Date.now() - datenow ) > HMD_UPDATE_INTERVAL ) {
-				  //TODO Grab or store all data from DB from db_id_array
-				  //TODO push/emit data to HMD
-					imu_msgs_array = [];
-					datenow = Date.now();
-				}*/
-
+					/*
+						if ( (Date.now() - datenow ) > HMD_UPDATE_INTERVAL ) {
+						//TODO Grab or store all data from DB from db_id_array
+						//TODO push/emit data to HMD
+						imu_msgs_array = [];
+						datenow = Date.now();
+						}*/
+				});
 			}
 
-			if( data.id === "GPS") {
-				parsedmsg = parser.parseMessageGPS(data.fields);
-				gps_msgs_array += [ [parsedmsg, guid] ]
+			if( msgtype === "GPS") {
+				parser.parseMessageGPS(msgdata,models).then( (parsedmsg) => {
 
-				/*
-				if ( (Date.now() - datenow ) > HMD_UPDATE_INTERVAL ) {
-				  //TODO Grab or store all data from DB from db_id_array
-				  //TODO push/emit data to HMD
-					gps_msgs_array = [];
-					datenow = Date.now();
-				}*/
+					gps_msgs_array += [ [parsedmsg, msginfo.Assignment] ];
+
+					/*
+						if ( (Date.now() - datenow ) > HMD_UPDATE_INTERVAL ) {
+						//TODO Grab or store all data from DB from db_id_array
+						//TODO push/emit data to HMD
+						gps_msgs_array = [];
+						datenow = Date.now();
+						}*/
+				});
 			}
 
-
-        // for (const [eventName, eventController] of Object.entries(events)) {
-        //     console.log(`Event Name: ${eventName}`);
-        // }
-
-        // switch(parsed.event) {
-        //     case "register":
-        //         studentMsg.register(parsed);
-        //         break;
-        // }
     });
+
 });
 
 server.listen(process.env.SOCKET_PORT, () => {
-    console.log(`SUITS Socket Server listening on: ${process.env.SOCKET_PORT}`);
+   console.log(`SUITS Socket Server listening on: ${process.env.SOCKET_PORT}`);
+
 });

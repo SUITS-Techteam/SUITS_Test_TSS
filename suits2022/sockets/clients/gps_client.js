@@ -13,7 +13,9 @@ const client = new socket('ws://192.168.1.90:3001');
 // GET /visionkitinfo/username?
 const vkinfo = {
   "VKID": "VK01",
-  "Type": "Student Kit"
+  "Type": "Student Kit",
+	"Assignment": "ef0110ad-cd77-413d-af5e-88cd4091f50c"
+
 };
 
 ///////////////////////////////////////
@@ -27,7 +29,8 @@ subprocessIMU.stderr.on("data", (data) => {
 });
 
 subprocessIMU.stdout.on("data", (data) => {
-	imudata = {"id": "IMU", "vkinfo": vkingo, "fields": data}
+  data = JSON.parse(data.toString());
+  imudata = {"id": "IMU", "vkinfo": vkinfo, "fields": data}
   // client.send(JSON.stringify(imudata));
   client.send(JSON.stringify(imudata));
   //console.log(`stdout:\n${data}`);
@@ -69,7 +72,7 @@ gps.on('error', err => {
 })
 
 gps.on('TPV', data => {
-	gpsdata = {"id": "GPS", "vkinfo": vkingo, "fields": data}
+  gpsdata = {"id": "GPS", "vkinfo": vkinfo, "fields": data.toString('utf-8')}
   client.send(JSON.stringify(gpsdata));
   //console.log(data)
 })

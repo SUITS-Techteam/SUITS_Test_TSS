@@ -12,17 +12,20 @@ class Parser {
 			return cb(null, obj);
 	}
 
-	//store in db, return db_id for message
-  async parseMessageIMU(data) {
-    let obj = JSON.parse(data.toString());
+  async parseMessageIMU(obj, models) {
+		for(const elem in obj)
+			if(elem === "id")
+				delete obj[elem];
+		  else
+				obj[elem] = parseFloat(obj[elem]);
+
 		const imumsg = await models.imumsg.create(obj);
 
     return imumsg;
   }
 
-	//store in db, return db_id for message
-  async parseMessageGPS(data) {
-    let obj = JSON.parse(data.toString());
+  async parseMessageGPS(obj, models) {
+		console.log(obj)
 		const gpsmsg = await models.gpsmsg.create(obj);
 
     return gpsmsg;

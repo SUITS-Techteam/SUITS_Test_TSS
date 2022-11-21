@@ -26,13 +26,13 @@ while True:
 
     imuData = {'id':'IMU',
 			   'heading':'{0:3.2f}'.format(heading),
-               'accel_x':'{0:3.2f}'.format(acc_x),
+			   'accel_x':'{0:3.2f}'.format(acc_x),
 			   'accel_y':'{0:3.2f}'.format(acc_y),
 			   'accel_z':'{0:3.2f}'.format(acc_z),
-               'gyro_x':'{0:3.2f}'.format(gyro_x),
+			   'gyro_x':'{0:3.2f}'.format(gyro_x),
 			   'gyro_y':'{0:3.2f}'.format(gyro_y),
 			   'gyro_z':'{0:3.2f}'.format(gyro_z),
-               'mag_x':'{0:3.2f}'.format(mag_x),
+			   'mag_x':'{0:3.2f}'.format(mag_x),
 			   'mag_y':'{0:3.2f}'.format(mag_y),
 			   'mag_z':'{0:3.2f}'.format(mag_z)}
 
