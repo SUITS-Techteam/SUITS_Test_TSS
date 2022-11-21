@@ -30,6 +30,16 @@ module.exports = (sequelize) => {
 			allowNull: false,
 			type: DataTypes.STRING,
 			unique: true
+		},
+		visionkit: {
+			allowNull: false,
+			type: DataTypes.STRING,
+			unique: true
+		},
+		hmd: {
+			allowNull: false,
+			type: DataTypes.STRING,
+			unique: true
 		}
 	});
 };
