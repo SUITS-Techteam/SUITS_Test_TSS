@@ -25,7 +25,6 @@ class Parser {
   }
 
   async parseMessageGPS(obj, models) {
-		console.log(obj)
 		const gpsmsg = await models.gpsmsg.create(obj);
 
     return gpsmsg;

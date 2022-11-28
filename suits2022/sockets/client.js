@@ -13,7 +13,7 @@ ws.on('open', (d) => {
 	for(let each of data2) {
 		try {
 			let j = JSON.parse(each)
-			ws.send(JSON.stringify(j))
+			ws.send(JSON.stringify(j));
 			//console.log(j)
 		} catch(e) {
 			//console.log(e)

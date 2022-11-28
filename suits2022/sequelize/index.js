@@ -32,7 +32,7 @@ const modelDefiners = [
 	require('./models/imumsg.model'),
 	require('./models/gpsmsg.model'),
 	require('./models/visionkit.model'),
-//	require('./models/hmd.model')
+	require('./models/hmd.model')
 ];
 
 // We define all models according to their files.
