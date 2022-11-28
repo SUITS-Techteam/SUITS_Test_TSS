@@ -37,6 +37,61 @@ module.exports = (sequelize) => {
 			allowNull: false,
 			type: DataTypes.DOUBLE,
 			unique: false
-		}
+		},
+		lat: {
+			allowNull: false,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		lon: {
+			allowNull: false,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		alt: {
+			allowNull: false,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		epx: {
+			allowNull: false,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		epy: {
+			allowNull: false,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		epv: {
+			allowNull: false,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		track: {
+			allowNull: true,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		speed: {
+			allowNull: true,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		climb: {
+			allowNull: true,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		eps: {
+			allowNull: true,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
+		epc: {
+			allowNull: true,
+			type: DataTypes.DOUBLE,
+			unique: false
+		},
 	});
 };
