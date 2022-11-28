@@ -88,7 +88,6 @@ wss.on('connection', (ws) => {
 			console.log(`** GOT MESSAGE **`);
 
 			data = JSON.parse(data.toString('utf-8'));
-			console.log(data);
 
 			let msgtype = data.id;
 			let msgdata = data.fields;

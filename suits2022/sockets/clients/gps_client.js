@@ -4,81 +4,140 @@ const Gpsd = require('node-gpsd-client');
 const { spawn } = require("node:child_process");
 const { stringify } = require('node:querystring');
 
-///////////////////////////////////////
-// Connect to socket server
-///////////////////////////////////////
-const client = new socket('ws://localhost:3001');
+class GPSClient {
+	constructor(vkid, vktype = "Student Kit") {
+		this.client = new socket('ws://localhost:3001');
+		this.apiurl = "http://localhost:8080";
+		this.vkinfo = {
+			"VKID": vkid,
+			"Type": vktype,
+			"Assignment": null
+		};
 
-// TODO This should be populated with actual visionkit info from the DB I assume?
-// We might be able to automate this by making a request to
-// getAssignment which would return the latest VKID that is unassigned
+		///////////////////////////////////////
+		// Connect to socket server
+		///////////////////////////////////////
+
+		// We might be able to automate this by making a request to
+		// getAssignment which would return the latest VKID that is unassigned
+		// GET /visionkitinfo/username?
+
+		this.getAssignment().then(result => {
+			if(!result.ok) {
+				console.log(data.err)
+				return;
+			}
+
+			let data = result.data;
+
+			this.vkinfo.Assignment = data.assignment;
+
+			if(this.vkinfo.Assignment === null){
+				return;
+			}
+
+			console.log(this.vkinfo);
+
+			///////////////////////////////////////
+			// Spawn IMU data-generating process
+			///////////////////////////////////////
+			this.imudata = null;
+			this.subprocessIMU = spawn('python', ['imu.py']);
+			this.setupIMUHandlers();
 
 
-// GET /visionkitinfo/username?
-const vkinfo = {
-  "VKID": "VK01",
-  "Type": "Student Kit",
-	"Assignment": "ef0110ad-cd77-413d-af5e-88cd4091f50c"
-};
-
-///////////////////////////////////////
-// Spawn IMU data-generating process
-///////////////////////////////////////
-let imudata;
-const subprocessIMU = spawn('python', ['imu.py']);
-
-subprocessIMU.stderr.on("data", (data) => {
-  console.error(`stderr: ${data}`);
-});
-
-subprocessIMU.stdout.on("data", (data) => {
-  data = JSON.parse(data.toString());
-  imudata = {"id": "IMU", "vkinfo": vkinfo, "fields": data};
-  // client.send(JSON.stringify(imudata));
-  client.send(JSON.stringify(imudata));
-  //console.log(`stdout:\n${data}`);
-});
+			///////////////////////////////////////
+			// Spawn GPS data-generating process
+			// GPSD options: -D debug level,
+			//               -N foreground process,
+			//               -n dont wait to poll,
+			//               -S port
+			///////////////////////////////////////
+			this.gpsdata = null;
+			this.subprocessGPS = spawn('gpsd', ['-D5', '-N', '-n', '-S3000', '/dev/serial0']);
+			this.gps = new Gpsd({
+				port: 3000 ,              // default
+				hostname: 'localhost',   // default
+				parse: true
+			});
+			this.setupGPSHandlers();
 
 
-///////////////////////////////////////
-// Spawn GPS data-generating process
-///////////////////////////////////////
-let gpsdata;
-const subprocessGPS = spawn('gpsd', ['-D5', '-N', '-n', '-S3000', '/dev/serial0']);
-// GPSD options: -D debug level, -N foreground process, -n dont wait to poll, -S port
 
-subprocessGPS.stdout.on("data", (data) => {
-  console.log(data.toString());
-});
+			console.log("GPS client started")
+		});
+	}
 
-const gps = new Gpsd({
-  port: 3000 ,              // default
-  hostname: 'localhost',   // default
-  parse: true
-});
+	setupIMUHandlers() {
+		let subprocessIMU = this.subprocessIMU;
+		let imudata = this.imudata;
+		let vkindo = this.vkinfo;
+		let client = this.client;
 
-gps.connect(() =>{
-  console.log("gpsd connected")
-});
+		subprocessIMU.stderr.on("data", (data) => {
+			console.error(`stderr: ${data}`);
+		});
 
-gps.on('connected', () => {
-  console.log('Gpsd connected')
-  gps.watch({
-    class: 'WATCH',
-    json: true,
-    scaled: true
-  });
-});
+		subprocessIMU.stdout.on("data", (data) => {
+			data = JSON.parse(data.toString());
+			imudata = {"id": "IMU", "vkinfo": vkinfo, "fields": data};
+			// client.send(JSON.stringify(imudata));
+			client.send(JSON.stringify(imudata));
+			//console.log(`stdout:\n${data}`);
+		});
+	}
 
-gps.on('error', err => {
-  console.log(`Gpsd error: ${err.message}`);
-  console.log(err);
-})
+	setupGPSHandlers() {
+		let subprocessGPS = this.subprocessGPS;
+		let gps = this.gps;
+		let gpsdata = this.gpsdata;
+		let vkinfo = this.vkinfo;
+		let client = this.client;
 
-gps.on('TPV', data => {
-  //console.log(data);
-  //data = JSON.parse(data.toString());
-  gpsdata = {"id": "GPS", "vkinfo": vkinfo, "fields": data};
-  client.send(JSON.stringify(gpsdata));
-  //console.log(data)
-})
+		subprocessGPS.stdout.on("data", (data) => {
+			console.log(data.toString());
+		});
+
+		gps.connect(() =>{
+			console.log("gpsd connected");
+		});
+
+		gps.on('connected', () => {
+			console.log('Gpsd connected');
+			gps.watch({
+				class: 'WATCH',
+				json: true,
+				scaled: true
+			});
+		});
+
+		gps.on('error', err => {
+			console.log(`Gpsd error: ${err.message}`);
+			console.log(err);
+		});
+
+		gps.on('TPV', data => {
+			//console.log(data);
+			//data = JSON.parse(data.toString());
+			gpsdata = {"id": "GPS", "vkinfo": vkinfo, "fields": data};
+			client.send(JSON.stringify(gpsdata));
+			//console.log(data)
+		});
+
+	}
+
+	async getAssignment() {
+		const res = await fetch(this.apiurl + "/api/auth/assignment", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/x-www-form-urlencoded',
+				//'Content-Type': 'application/json',
+			},
+			body: "vk="+this.vkinfo.VKID
+		});
+		return res.json();
+	}
+}
+
+
+let gpsclient = new GPSClient("VK01");

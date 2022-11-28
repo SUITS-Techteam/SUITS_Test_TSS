@@ -2,6 +2,8 @@ const { models } = require('../../sequelize');
 const { getIdParam } = require('../helpers');
 const crypto = require('node:crypto');
 
+let secretkey = "admin78$Akt"
+
 async function getUsers() {
 	const userData = await models.user.findAll();
 	return userData;
@@ -31,6 +33,8 @@ async function registerUser(req, res) {
 
 	//Debug console.log(req.body);
 
+	//////////// User Checks
+
 	if(req.body.username === undefined || req.body.username === '') {
 		res.status(400).json({ ok: false, err: 'Username is missing or empty' });
 		return;
@@ -52,13 +56,15 @@ async function registerUser(req, res) {
 		}
 	}
 
+	//////////// Room Checks
+
 	//TODO check if room is full
 	if(req.body.room === undefined || req.body.room > 24) {
 		res.status(400).json({ ok: false, err: 'Room ID is missing or out of range'});
 		return;
 	}
 
-	//TODO check if visionkit is assigned and if so make req.body.visionkit = assigned
+	//////////// VK Assignment
 
 	let vks;
 	try {
@@ -80,6 +86,7 @@ async function registerUser(req, res) {
 		req.body.visionkit = next_vk.name;
 	};
 
+	//////////// HMD Assignment
 
 	let hmds;
 	try {
@@ -111,17 +118,95 @@ async function registerUser(req, res) {
 	res.status(200).json(user);
 };
 
-/*
-async function release(req, res) {
+async function assignmentLookup(req, res) {
 
-  // TODO release HMD/VK back into unassigned pool
-  await models.user.update(req.body, {
-    where: {
-      id: id
-    }
-  });
+	if(req.body.hmd === undefined && req.body.vk === undefined) {
+		res.status(400).json({ ok: false, err: "HMD or VK not specified"});
+		return;
+	}
+
+	if(req.body.hmd) {
+		let hmds;
+		try {
+			hmds = await getHMDs();
+		} catch (err) {
+			console.log(err);
+			res.status(400).json({ ok: false, err: "Could not get HMDs"});
+			return;
+		};
+
+		for( const hmdrecord of hmds){
+			if(req.body.hmd === hmdrecord.name) {
+				res.status(200).json({ ok: true, data: hmdrecord });
+				return;
+			}
+		}
+	}
+
+	if(req.body.vk) {
+
+		let vks;
+		try {
+			vks = await getVKs();
+		} catch (err) {
+			console.log(err);
+			res.status(400).json({ ok: false, err: "Could not get VKs"});
+			return;
+		};
+
+		for( const vkrecord of vks){
+			if(req.body.vk === vkrecord.name) {
+				res.status(200).json({ ok: true, data: vkrecord });
+				return;
+			}
+		}
+	}
+
+	res.status(400).json({ ok: false, err: "VK or HMD not found"});
+	return;
+}
+
+async function assignmentRelease(req, res) {
+
+	if(req.body.hmd === undefined && req.body.vk === undefined) {
+		res.status(400).json({ ok: false, err: "HMD or VK not specified"});
+		return;
+	}
+
+	if(req.body.secret !== secretkey) {
+		res.status(400).json({ ok: false, err: "Unauthorized"});
+		return;
+	}
+
+	let name;
+	if(req.body.hmd) {
+
+		//TODO
+		//fetch all hmds
+		//get object, update assignment to null
+		//update object
+		await models.visionkit.update(req.body, {
+			where: {
+				name: name
+			}
+		});
+
+		return;
+	}
+
+	if(req.body.vk) {
+
+		await models.visionkit.update(req.body, {
+			where: {
+				name: name
+			}
+		});
+
+		return;
+	}
+
   res.status(200).end();
-}*/
+}
 
 async function update(req, res) {
 
@@ -134,5 +219,6 @@ async function update(req, res) {
 }
 
 module.exports = {
-	registerUser
+	registerUser,
+	assignmentLookup
 };
