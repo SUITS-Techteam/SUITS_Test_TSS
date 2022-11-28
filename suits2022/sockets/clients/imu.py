@@ -12,19 +12,19 @@ mag = LIS3MDL(i2c)
 debug = False
 
 while True:
-    acceleration = accel_gyro.acceleration
-    acc_x, acc_y, acc_z = acceleration
-    gyro = accel_gyro.gyro
-    gyro_x, gyro_y, gyro_z = gyro
-    magnetic = mag.magnetic
-    mag_x, mag_y, mag_z = magnetic
+	acceleration = accel_gyro.acceleration
+	acc_x, acc_y, acc_z = acceleration
+	gyro = accel_gyro.gyro
+	gyro_x, gyro_y, gyro_z = gyro
+	magnetic = mag.magnetic
+	mag_x, mag_y, mag_z = magnetic
 
-    heading = (math.atan(mag_y/mag_x) * -100)
+	heading = (math.atan(mag_y/mag_x) * -100)
 
-    if (heading < 0):
-        heading = heading + 360
+	if (heading < 0):
+		heading = heading + 360
 
-    imuData = {'id':'IMU',
+	imuData = {'id':'IMU',
 			   'heading':'{0:3.2f}'.format(heading),
 			   'accel_x':'{0:3.2f}'.format(acc_x),
 			   'accel_y':'{0:3.2f}'.format(acc_y),
@@ -36,7 +36,7 @@ while True:
 			   'mag_y':'{0:3.2f}'.format(mag_y),
 			   'mag_z':'{0:3.2f}'.format(mag_z)}
 
-    print(json.dumps(imuData))
+	print(json.dumps(imuData))
 
 	if debug:
 		print(heading)
@@ -45,5 +45,5 @@ while True:
 		print("Magnetic:      X:{0:7.2f}, Y:{1:7.2f}, Z:{2:7.2f} uT".format(*magnetic))
 		print("")
 
-    sys.stdout.flush() #Flushing STDOUT to get consistent data flow
-    time.sleep(0.5)
+	sys.stdout.flush() #Flushing STDOUT to get consistent data flow
+	time.sleep(0.5)
