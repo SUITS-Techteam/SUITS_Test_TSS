@@ -76,7 +76,7 @@ gps.on('error', err => {
 })
 
 gps.on('TPV', data => {
-  console.log(data);
+  //console.log(data);
   //data = JSON.parse(data.toString());
   gpsdata = {"id": "GPS", "vkinfo": vkinfo, "fields": data};
   client.send(JSON.stringify(gpsdata));
