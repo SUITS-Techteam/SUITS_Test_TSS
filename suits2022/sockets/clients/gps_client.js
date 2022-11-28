@@ -7,7 +7,7 @@ const { stringify } = require('node:querystring');
 ///////////////////////////////////////
 // Connect to socket server
 ///////////////////////////////////////
-const client = new socket('ws://192.168.1.90:3001');
+const client = new socket('ws://localhost:3001');
 
 // TODO This should be populated with actual visionkit info from the DB I assume?
 // We might be able to automate this by making a request to
@@ -71,11 +71,14 @@ gps.on('connected', () => {
 });
 
 gps.on('error', err => {
-  console.log(`Gpsd error: ${err.message}`)
+  console.log(`Gpsd error: ${err.message}`);
+  console.log(err);
 })
 
 gps.on('TPV', data => {
-  gpsdata = {"id": "GPS", "vkinfo": vkinfo, "fields": data.toString('utf-8')};
+  console.log(data);
+  //data = JSON.parse(data.toString());
+  gpsdata = {"id": "GPS", "vkinfo": vkinfo, "fields": data};
   client.send(JSON.stringify(gpsdata));
   //console.log(data)
 })
