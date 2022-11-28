@@ -56,6 +56,73 @@ async function reset() {
 		// { username: 'brown-beard' },
 	]);
 
+	await sequelize.models.visionkit.bulkCreate([
+		{
+      id: 1,
+      name: 'VK01',
+      description: 'Student Kit',
+      assignment: 'ef0110ad-cd77-413d-af5e-88cd4091f50c'
+    },
+		{
+      id: 2,
+      name: 'VK02',
+      description: 'Student Kit',
+      assignment: 'a429f7b1-882a-4642-901b-f859687f8292'
+    },
+		{
+      id: 3,
+      name: 'VK03',
+      description: 'Student Kit',
+      assignment: null
+    },
+		{
+      id: 4,
+      name: 'VK04',
+      description: 'Student Kit',
+      assignment: null
+    },
+		{
+      id: 5,
+      name: 'VK05',
+      description: 'Student Kit',
+      assignment: null
+    },
+
+	]);
+
+	await sequelize.models.hmd.bulkCreate([
+		{
+      id: 1,
+      name: 'HMD01',
+      description: 'Student Kit',
+      assignment: 'ef0110ad-cd77-413d-af5e-88cd4091f50c'
+    },
+		{
+      id: 2,
+      name: 'HMD02',
+      description: 'Student Kit',
+      assignment: 'a429f7b1-882a-4642-901b-f859687f8292'
+    },
+		{
+      id: 3,
+      name: 'HMD03',
+      description: 'Student Kit',
+      assignment: null
+    },
+		{
+      id: 4,
+      name: 'HMD04',
+      description: 'Student Kit',
+      assignment: null
+    },
+		{
+      id: 5,
+      name: 'HMD05',
+      description: 'Student Kit',
+      assignment: null
+    },
+
+	]);
 	await sequelize.models.lsar.bulkCreate([
 
 	]);
