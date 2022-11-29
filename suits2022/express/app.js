@@ -56,8 +56,17 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 
 	// Auth Stuff
 	if(routeController.registerUser) {
-		app.post(`/api/${routeName}/register`, 
+		app.post(`/api/${routeName}/register`,
 			makeHandlerAwareOfAsyncErrors(routeController.registerUser));
+	}
+
+	if(routeController.assignmentLookup) {
+		app.post(`/api/${routeName}/assignment`,
+			makeHandlerAwareOfAsyncErrors(routeController.assignmentLookup));
+	}
+	if(routeController.assignmentRelease) {
+		app.post(`/api/${routeName}/assignmentrelease`,
+			makeHandlerAwareOfAsyncErrors(routeController.assignmentRelease));
 	}
 
 	// Simulation Stuff
@@ -72,14 +81,14 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 	}
 
 	if(routeController.failureSim) {
-		app.get(`/api/${routeName}/simfail/:room/:failure`, 
+		app.get(`/api/${routeName}/simfail/:room/:failure`,
 			makeHandlerAwareOfAsyncErrors(routeController.failureSim));
 	}
 
 	// Commander Stuff
 	if(routeController.getAllRoomsWithUsers) {
 		app.get(
-			`/api/${routeName}/cmdr/getusers`, 
+			`/api/${routeName}/cmdr/getusers`,
 			makeHandlerAwareOfAsyncErrors(routeController.getAllRoomsWithUsers));
 	}
 	// End Commander Stuff
@@ -103,7 +112,7 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 			makeHandlerAwareOfAsyncErrors(routeController.getByName)
 		);
 	}
-	
+
 	if(routeController.getByRoomId) {
 		app.get(
 			`/api/${routeName}/room/:room`,

@@ -181,31 +181,52 @@ async function assignmentRelease(req, res) {
 	let name;
 	if(req.body.hmd) {
 
-		//TODO
-		//fetch all hmds
-		//get object, update assignment to null
-		//update object
-		await models.visionkit.update(req.body, {
-			where: {
-				name: name
-			}
-		});
+		let hmds;
+		try {
+			hmds = await getHMDs();
+		} catch (err) {
+			console.log(err);
+			res.status(400).json({ ok: false, err: "Could not get HMDs"});
+			return;
+		};
 
-		return;
+		for( const hmdrecord of hmds){
+			if(req.body.hmd === hmdrecord.name) {
+				hmdrecord.assignment = null;
+				await hmdrecord.save();
+				res.status(200).json({ ok: true, data: hmdrecord });
+				return;
+			}
+		}
+
+
 	}
 
 	if(req.body.vk) {
 
-		await models.visionkit.update(req.body, {
-			where: {
-				name: name
+		let vks;
+		try {
+			vks = await getVKs();
+		} catch (err) {
+			console.log(err);
+			res.status(400).json({ ok: false, err: "Could not get VKs"});
+			return;
+		};
+
+		for( const vkrecord of vks){
+			if(req.body.vk === vkrecord.name) {
+				vkrecord.assignment = null;
+				await vkrecord.save();
+				res.status(200).json({ ok: true, data: vkrecord });
+				return;
 			}
-		});
+		}
 
 		return;
 	}
 
-  res.status(200).end();
+	res.status(400).json({ ok: false, err: "Could not release VK or HMD."});
+	return;
 }
 
 async function update(req, res) {
@@ -220,5 +241,6 @@ async function update(req, res) {
 
 module.exports = {
 	registerUser,
-	assignmentLookup
+	assignmentLookup,
+	assignmentRelease
 };
