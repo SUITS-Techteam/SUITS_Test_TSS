@@ -32,12 +32,12 @@ module.exports = (sequelize) => {
 			unique: true
 		},
 		visionkit: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.STRING,
 			unique: true
 		},
 		hmd: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.STRING,
 			unique: true
 		}

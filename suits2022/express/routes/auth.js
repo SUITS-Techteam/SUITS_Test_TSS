@@ -2,7 +2,10 @@ const { models } = require('../../sequelize');
 const { getIdParam } = require('../helpers');
 const crypto = require('node:crypto');
 
-let secretkey = "admin78$Akt"
+let secretkey = "admin78$Akt";
+
+//TODO
+//add getUser endpoint by assignment GUID
 
 async function getUsers() {
 	const userData = await models.user.findAll();
@@ -111,9 +114,12 @@ async function registerUser(req, res) {
 	req.body.guid = crypto.randomUUID();
 
 	const user = await models.user.create(req.body);
-	const vk = await next_vk.update({ assignment: req.body.guid });
-	const hmd = await next_hmd.update({ assignment: req.body.guid });
-	console.log(user,vk,hmd);
+
+	next_vk.assignment = req.body.guid;
+	await next_vk.save();
+
+	next_hmd.assignment = req.body.guid;
+	await next_hmd.save();
 
 	res.status(200).json(user);
 };
@@ -191,6 +197,23 @@ async function assignmentRelease(req, res) {
 		};
 
 		for( const hmdrecord of hmds){
+
+			let users;
+			try {
+				users = await getUsers();
+			} catch (err) {
+				console.log(err);
+				res.status(400).json({ ok: false, err: "Could not get Users"});
+				return;
+			};
+
+			for(const userRecord of users) {
+				if(hmdrecord.assignment === userRecord.guid) {
+					userRecord.hmd = null;
+					userRecord.save();
+				}
+			}
+
 			if(req.body.hmd === hmdrecord.name) {
 				hmdrecord.assignment = null;
 				await hmdrecord.save();
@@ -215,8 +238,26 @@ async function assignmentRelease(req, res) {
 
 		for( const vkrecord of vks){
 			if(req.body.vk === vkrecord.name) {
+
+				let users;
+				try {
+					users = await getUsers();
+				} catch (err) {
+					console.log(err);
+					res.status(400).json({ ok: false, err: "Could not get Users"});
+					return;
+				};
+
+				for(const userRecord of users) {
+					if(vkrecord.assignment === userRecord.guid) {
+						userRecord.visionkit = null;
+						userRecord.save();
+					}
+				}
+
 				vkrecord.assignment = null;
 				await vkrecord.save();
+
 				res.status(200).json({ ok: true, data: vkrecord });
 				return;
 			}

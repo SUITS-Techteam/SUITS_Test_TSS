@@ -16,7 +16,7 @@ async function getById(req, res) {
 	}
 };
 
-async function getByRoomId(req, res) {	
+async function getByRoomId(req, res) {
 	const location = await models.location.findAll({ where: { room: req.params.room }});
 	if (location) {
 		res.status(200).json(location);
@@ -25,7 +25,7 @@ async function getByRoomId(req, res) {
 	}
 };
 
-async function getByUserId(req, res) {	
+async function getByUserId(req, res) {
 	const location = await models.location.findAll({ where: { user: req.params.user }});
 	if (location) {
 		res.status(200).json(location);
@@ -36,14 +36,14 @@ async function getByUserId(req, res) {
 
 async function create(req, res) {
 	if (req.body.id) {
-		res.status(400).send(`Bad request: ID should not be provided, since it is determined automatically by the database.`)
+		res.status(400).send(`Bad request: ID should not be provided, since it is determined automatically by the database.`);
 	} else {
-		let location = await models.location.create(req.body);		
+		let location = await models.location.create(req.body);
 		res.status(201).send(location.dataValues);
 	}
 };
 
-async function updateUser(req, res) {	
+async function updateUser(req, res) {
     await models.location.update(req.params.user, {
         where: {
             user: req.params.user

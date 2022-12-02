@@ -31,7 +31,7 @@ async function getUsers() {
 let userlist = [];
 getUsers().then( (users) => {
 	userlist = users;
-	console.log(userlist)
+	//console.log(userlist)
 }).catch(err => {console.log(err)});
 
 wss.on('connection', (ws) => {
