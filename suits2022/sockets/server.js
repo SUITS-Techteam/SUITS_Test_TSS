@@ -96,6 +96,8 @@ wss.on('connection', (ws) => {
 			if (msgtype === "IMU") {
 				parser.parseMessageIMU(msgdata, models).then((parsedmsg) => {
 
+
+				if(parsedmsg)
 				  //Store message to push and guid/room to push to
 				  imu_msgs_array.push([parsedmsg, msginfo.Assignment]);
 
@@ -105,6 +107,7 @@ wss.on('connection', (ws) => {
 			if( msgtype === "GPS") {
 				parser.parseMessageGPS(msgdata,models).then( (parsedmsg) => {
 
+				if(parsedmsg)
 					gps_msgs_array.push([parsedmsg, msginfo.Assignment] );
 
 				});

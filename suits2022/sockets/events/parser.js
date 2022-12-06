@@ -19,13 +19,23 @@ class Parser {
 		  else
 				obj[elem] = parseFloat(obj[elem]);
 
+	  try{
 		const imumsg = await models.imumsg.create(obj);
+	  } catch(e) {
+		  console.log(e);
+		  return null;
+	  }
 
     return imumsg;
   }
 
   async parseMessageGPS(obj, models) {
+	  try{
 		const gpsmsg = await models.gpsmsg.create(obj);
+	  } catch(e) {
+		  console.log(e);
+		  return null;
+	  }
 
     return gpsmsg;
   }
