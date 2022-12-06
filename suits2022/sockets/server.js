@@ -72,7 +72,7 @@ wss.on('connection', (ws) => {
 				//TODO send to correct client based on GUID
 				console.log("Chunk send");
 				console.log(datachunk[guid]);
-				ws.send(JSON.stringify(datachunk[guid]));
+				ws.send({ "GUID": guid, "DATA": JSON.stringify(datachunk[guid])});
 				console.log("Data pushed.");
 			}
 
