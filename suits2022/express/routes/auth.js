@@ -270,6 +270,38 @@ async function assignmentRelease(req, res) {
 	return;
 }
 
+async function findUser(req, res) {
+
+	if( (req.body.username === undefined || req.body.username === '') &&
+			(req.body.guid === undefined  || req.body.guid === '') ) {
+		res.status(400).json({ ok: false, err: 'Username or guid is missing or empty' });
+		return;
+	}
+
+	let users;
+	try {
+		users = await getUsers();
+	} catch (err) {
+		console.log(err);
+		res.status(400).json({ ok: false, err: "Could not get Users"});
+		return;
+	};
+
+	for(const userRecord of users) {
+		if(req.body.guid === userRecord.guid) {
+			res.status(200).json({ ok: false, user: userRecord });
+			return;
+		}
+
+		if(req.body.username === userRecord.username) {
+			res.status(200).json({ ok: false, user: userRecord });
+			return;
+		}
+	}
+
+	res.status(400).json({ ok: false, err: "Could not find User"});
+}
+
 async function update(req, res) {
 
     await models.user.update(req.body, {
@@ -283,5 +315,6 @@ async function update(req, res) {
 module.exports = {
 	registerUser,
 	assignmentLookup,
-	assignmentRelease
+	assignmentRelease,
+	findUser
 };

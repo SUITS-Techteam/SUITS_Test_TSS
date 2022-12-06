@@ -60,6 +60,10 @@ for (const [routeName, routeController] of Object.entries(routes)) {
 			makeHandlerAwareOfAsyncErrors(routeController.registerUser));
 	}
 
+	if(routeController.findUser) {
+		app.post(`/api/${routeName}/finduser`,
+		  makeHandlerAwareOfAsyncErrors(routeController.findUser));
+	}
 	if(routeController.assignmentLookup) {
 		app.post(`/api/${routeName}/assignment`,
 			makeHandlerAwareOfAsyncErrors(routeController.assignmentLookup));
