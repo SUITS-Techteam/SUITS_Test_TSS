@@ -21,23 +21,25 @@ class Parser {
 
 	  try{
 		const imumsg = await models.imumsg.create(obj);
+    		return imumsg;
 	  } catch(e) {
 		  console.log(e);
 		  return null;
 	  }
 
-    return imumsg;
+
   }
 
   async parseMessageGPS(obj, models) {
 	  try{
 		const gpsmsg = await models.gpsmsg.create(obj);
+    		return gpsmsg;
 	  } catch(e) {
 		  console.log(e);
 		  return null;
 	  }
 
-    return gpsmsg;
+
   }
 }
 
