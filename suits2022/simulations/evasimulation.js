@@ -3,14 +3,15 @@ const { simulationStep } = require('../telemetry/eva_telemetry')
 const simStateSeed = require('../seed/simstate.json');
 const simControlSeed = require('../seed/simcontrol.json');
 const simFailureSeed = require('../seed/simfailure.json');
-// var SimulationState = mongoose.model('SimulationState')	
+// var SimulationState = mongoose.model('SimulationState')
 // var SimulationControl = mongoose.model('SimulationControl')
 // var SimulationFailure = mongoose.model('SimulationFailure')
+require('dotenv').config();
 
 class EVASimulation {
 	simTimer = null;
 	simStateID = null;
-	simControlID = null;	
+	simControlID = null;
 	simFailureID = null;
 	holdID = null;
 	lastTimestamp = null;
@@ -37,10 +38,10 @@ class EVASimulation {
 		// Seed the states on start
 		await models.simulationstate.update(simStateSeed, {
 			where: { id: state.id }
-		});	
+		});
 		await models.simulationcontrol.update(simControlSeed, {
 			where: { id: control.id }
-		});	
+		});
 		await models.simulationfailure.update(simFailureSeed, {
 			where: { id: failure.id }
 		});
@@ -96,7 +97,7 @@ class EVASimulation {
 			throw new Error('Cannot pause: simulation is not running or it is running and is already paused')
 		}
 		console.log('--------------Simulation Paused-------------')
-	
+
 		clearInterval(this.simTimer);
 		this.simTimer = null ;
 		this.lastTimestamp = null;
@@ -105,7 +106,7 @@ class EVASimulation {
 			where: { id: this.simStateID }
 		});
 	}
-	
+
 	async unpause() {
 		if (!this.simState.isRunning) {
 			throw new Error('Cannot unpause: simulation is not running or it is running and is not paused')
@@ -126,15 +127,15 @@ class EVASimulation {
 		}
 		console.log('--------------Simulation Stopped-------------')
 		// this.simStateID = null
-		// this.controlID = null 
+		// this.controlID = null
 		clearInterval(this.simTimer)
-		this.simTimer = null 
+		this.simTimer = null
 		this.lastTimestamp = null
 
 		// Reseed here
 		this.seedInstances();
 	}
-	
+
 	async getState () {
 		const simState = await models.SimulationState.findByPk(this.simStateID);
 		// await SimulationState.findById(simStateID).exec()
@@ -143,7 +144,7 @@ class EVASimulation {
 	async getControls() {
 		const controls = await models.SimulationControl.findByPk(this.simControlID);
 		//await SimulationControl.findById(controlID).exec()
-		return controls 
+		return controls
 	}
 
 	async getFailure() {
@@ -151,7 +152,7 @@ class EVASimulation {
 		//await SimulationFailure.findById(failureID).exec()
 		return failure
 	}
-	
+
 	async setFailure(newFailure) {
 		const failure = await models.simulationfailure.update(newFailure, {
 			where: {
@@ -166,7 +167,7 @@ class EVASimulation {
 
 		return failure
 	}
-	
+
 	async setControls(newControls) {
 		// const controls = await SimulationControl.findByIdAndUpdate(controlID, newControls, {new: true}).exec()
 		const controls = await models.simulationcontrol.update(newControls, {
@@ -179,8 +180,8 @@ class EVASimulation {
 		await models.simulationcontrol.findAll({where: {room: this.room}}).then(data => {
 			this.simControls = data[0].dataValues;
 		});
-		
-		return controls 
+
+		return controls
 	}
 
 	async step() {
@@ -193,10 +194,12 @@ class EVASimulation {
 
 			const now = Date.now();
 			const dt = now - this.lastTimestamp;
-			this.lastTimestamp = now;			
+			this.lastTimestamp = now;
 
 			const newSimState = simulationStep(dt, this.simControls, this.simFailure, this.simState)
 			Object.assign(this.simState, newSimState)
+			console.log("SIMSTATE:")
+			console.log(this.simState)
 			// await simState.save()
 			await models.simulationstate.update(this.simState, {
 				where: {
@@ -204,9 +207,9 @@ class EVASimulation {
 				}
 			}).then(() => {
 				console.log('Updated');
-			});			
+			});
 		}
-		catch(error){ 
+		catch(error){
 			console.error('failed error')
 			console.error(error.toString())
 		}

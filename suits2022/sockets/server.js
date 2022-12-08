@@ -17,6 +17,7 @@ const HMD_UPDATE_INTERVAL = 5000; //Milliseconds
 let datenow = Date.now();
 let imu_msgs_array = [];
 let gps_msgs_array = [];
+let eva_msgs_array = [];
 
 const events = {
     student: require('./controllers')
@@ -34,7 +35,10 @@ getUsers().then( (users) => {
 	//console.log(userlist)
 }).catch(err => {console.log(err)});
 
-wss.on('connection', (ws) => {
+
+let evasim = require('../../simulations/evasimulation.js');
+
+wss.on('connection', (ws, req) => {
     console.log(`*** USER CONNECTED ***`);
     let connection = { id: uuidv4() };
 
@@ -54,7 +58,7 @@ wss.on('connection', (ws) => {
 				let parsedmsg = each[0];
 				let guid = each[1];
 				if( ! datachunk[guid] ){
-						datachunk[guid] = {ims: [], gps: []};
+					datachunk[guid] = {ims: [], gps: [], eva: []};
 				}
 				datachunk[guid].ims.push(parsedmsg);
 			}
@@ -63,9 +67,18 @@ wss.on('connection', (ws) => {
 				let parsedmsg = each[0];
 				let guid = each[1];
 				if( ! datachunk[guid] ){
-						datachunk[guid] = {ims: [], gps: []};
+					datachunk[guid] = {ims: [], gps: [], eva: []};
 				}
 				datachunk[guid].gps.push(parsedmsg);
+			}
+
+			for(const each of eva_msgs_array) {
+				let parsedmsg = each[0];
+				let guid = each[1];
+				if( ! datachunk[guid] ){
+					datachunk[guid] = {ims: [], gps: [], eva: []};
+				}
+				datachunk[guid].eva.push(parsedmsg);
 			}
 
 			for( const guid in datachunk) {
@@ -78,6 +91,7 @@ wss.on('connection', (ws) => {
 
 			imu_msgs_array = [];
 			gps_msgs_array = [];
+			eva_msgs_array = [];
 
 			if( Object.keys(datachunk).length === 0)
 				console.log("No data to push.");
@@ -116,6 +130,41 @@ wss.on('connection', (ws) => {
 			}
 
     });
+
+  ws.on('evamessage', (data) => {
+		console.log(`** GOT EVAMESSAGE **`);
+		if(data.command === "create") {
+			if(data.room) {
+				//TODO stop or pause all other evasims and start new sim in room
+				evasim = new evasim(1);
+			}
+		}
+		if(data.command === "start") {
+			evasim.start(1);
+
+		}
+		if(data.command === "pause") {
+			evasim.pause();
+		}
+		if(data.command === "resume") {
+			evasim.unpause();
+		}
+		if(data.command === "stop") {
+			evasim.stop();
+		}
+		if(data.command === "control") {
+			//TODO handle fan_switch,suit_power,o2_switch,aux,rca,pump
+		}
+		if(data.command === "failure") {
+			//TODO handle o2_error,pump_error,power_error,fan_error
+		}
+		if(data.command === "pushmsg") {
+
+			eva_msgs_array.push(data.data);
+
+			//find GUID/HMD associated with room
+		}
+	});
 
 });
 
