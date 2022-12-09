@@ -23,19 +23,19 @@ while True:
 		cal_acc_x = acc_x - acc_x1
 		print(cal_acc_x)
 	else:
-		cal_acc_x = acc_x - acc_x1
+		cal_acc_x = acc_x + acc_x1
 		print(cal_acc_x)
 	if acc_y1 > 0:
 		cal_acc_y = acc_y - acc_y1
 		print(cal_acc_y)
 	else:
-		cal_acc_y = acc_y - acc_y1
+		cal_acc_y = acc_y + acc_y1
 		print(cal_acc_y)
 	if acc_z1 > 0:
 		cal_acc_z = acc_z - acc_z1
 		print(cal_acc_z)
 	else:
-		cal_acc_z = acc_z - acc_z1
+		cal_acc_z = acc_z + acc_z1
 		print(cal_acc_z)
 	
 	heading = (math.atan(mag_y/mag_x) * -100)
