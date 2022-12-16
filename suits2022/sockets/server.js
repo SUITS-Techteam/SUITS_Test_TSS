@@ -2,6 +2,7 @@ const http = require('http');
 const SocketServer = require('ws');
 const Parser = require('./events/parser');
 const Event = require('./events/event');
+const Simulation = require('./events/sim');
 const { v4: uuidv4 } = require('uuid');
 
 require('dotenv').config();
@@ -12,6 +13,7 @@ const clients = [];
 const rooms = [];
 
 let parser = new Parser();
+let simulation = new Simulation();
 
 const HMD_UPDATE_INTERVAL = 5000; //Milliseconds
 let datenow = Date.now();
@@ -35,8 +37,6 @@ getUsers().then( (users) => {
 	//console.log(userlist)
 }).catch(err => {console.log(err)});
 
-
-let evasim = require('../../simulations/evasimulation.js');
 
 wss.on('connection', (ws, req) => {
     console.log(`*** USER CONNECTED ***`);
@@ -72,6 +72,11 @@ wss.on('connection', (ws, req) => {
 				datachunk[guid].gps.push(parsedmsg);
 			}
 
+
+			////////
+			///eva_msgs_array.push(data.data);
+
+			//find GUID/HMD associated with room
 			for(const each of eva_msgs_array) {
 				let parsedmsg = each[0];
 				let guid = each[1];
@@ -80,6 +85,7 @@ wss.on('connection', (ws, req) => {
 				}
 				datachunk[guid].eva.push(parsedmsg);
 			}
+			///////
 
 			for( const guid in datachunk) {
 				//TODO send to correct client based on GUID
@@ -98,9 +104,8 @@ wss.on('connection', (ws, req) => {
 
 		}
 
-    ws.on('message', (data) => {
+    ws.on('message', async (data) => {
 			console.log(`** GOT MESSAGE **`);
-
 
 			data = JSON.parse(data.toString('utf-8'));
 	    console.log(data);
@@ -116,8 +121,10 @@ wss.on('connection', (ws, req) => {
 				if(parsedmsg)
 				  //Store message to push and guid/room to push to
 				  imu_msgs_array.push([parsedmsg, msginfo.Assignment]);
-
 				});
+
+				return;;
+
 			}
 
 			if( msgtype === "GPS") {
@@ -125,45 +132,28 @@ wss.on('connection', (ws, req) => {
 
 				if(parsedmsg)
 					gps_msgs_array.push([parsedmsg, msginfo.Assignment] );
-
 				});
+
+				return;
 			}
 
-    });
+			if( msgtype === "EVA") {
+				console.log(`** GOT EVAMESSAGE **`);
+				if(data.execute === "command") {
+					let ret_data = await simulation.commandSim( msgdata.room, msgdata.event);
+					console.log(ret_data)
+					ws.send(JSON.stringify(ret_data));
+				}
+				if(data.execute === "control") {
+					let ret_data = await simulation.controlSim( msgdata.room, msgdata.control);
+					ws.send(JSON.stringify(ret_data));
+				}
+				if(data.execute === "failure") {
+					let ret_data = await simulation.failureSim( msgdata.room, msgdata.failure);
+					ws.send(JSON.stringify(ret_data));
+				}
 
-  ws.on('evamessage', (data) => {
-		console.log(`** GOT EVAMESSAGE **`);
-		if(data.command === "create") {
-			if(data.room) {
-				//TODO stop or pause all other evasims and start new sim in room
-				evasim = new evasim(1);
 			}
-		}
-		if(data.command === "start") {
-			evasim.start(1);
-
-		}
-		if(data.command === "pause") {
-			evasim.pause();
-		}
-		if(data.command === "resume") {
-			evasim.unpause();
-		}
-		if(data.command === "stop") {
-			evasim.stop();
-		}
-		if(data.command === "control") {
-			//TODO handle fan_switch,suit_power,o2_switch,aux,rca,pump
-		}
-		if(data.command === "failure") {
-			//TODO handle o2_error,pump_error,power_error,fan_error
-		}
-		if(data.command === "pushmsg") {
-
-			eva_msgs_array.push(data.data);
-
-			//find GUID/HMD associated with room
-		}
 	});
 
 });
