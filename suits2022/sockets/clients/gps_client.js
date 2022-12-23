@@ -5,11 +5,12 @@ const { spawn } = require("node:child_process");
 const { stringify } = require('node:querystring');
 
 class GPSClient {
-	constructor(vkid, vktype = "Student Kit") {
+	constructor(vkid, macaddr, vktype = "VISIONKIT") {
 		this.client = new socket('ws://localhost:3001');
 		this.apiurl = "http://localhost:8080";
 		this.vkinfo = {
-			"VKID": vkid,
+			"Name": vkid,
+			"MacAddress": macaddr,
 			"Type": vktype,
 			"Assignment": null
 		};
@@ -18,60 +19,70 @@ class GPSClient {
 		// Connect to socket server
 		///////////////////////////////////////
 
-		// We might be able to automate this by making a request to
-		// getAssignment which would return the latest VKID that is unassigned
-		// GET /visionkitinfo/username?
-
-		this.getAssignment().then(result => {
-			if(!result.ok) {
-				console.log(data.err)
-				return;
-			}
-
-			let data = result.data;
-
-			this.vkinfo.Assignment = data.assignment;
-
-			if(this.vkinfo.Assignment === null){
-				return;
-			}
-
-			console.log(this.vkinfo);
-
-			///////////////////////////////////////
-			// Spawn IMU data-generating process
-			///////////////////////////////////////
-			this.imudata = null;
-			this.subprocessIMU = spawn('python', ['imu.py']);
-			this.setupIMUHandlers();
+		this.client.on("open", () => {
+      console.log("Connection to socket server established.");
 
 
-			///////////////////////////////////////
-			// Spawn GPS data-generating process
-			// GPSD options: -D debug level,
-			//               -N foreground process,
-			//               -n dont wait to poll,
-			//               -S port
-			///////////////////////////////////////
-			this.gpsdata = null;
-			this.subprocessGPS = spawn('gpsd', ['-D5', '-N', '-n', '-S3000', '/dev/serial0']);
-			this.gps = new Gpsd({
-				port: 3000 ,              // default
-				hostname: 'localhost',   // default
-				parse: true
+
+			// We might be able to automate this by making a request to
+			// getAssignment which would return the latest VKID that is unassigned
+			// GET /visionkitinfo/username?
+
+			this.getAssignment().then(result => {
+				if(!result.ok) {
+					console.log(data.err)
+					return;
+				}
+
+				let data = result.data;
+
+				this.vkinfo.Assignment = data.assignment;
+
+				if(this.vkinfo.Assignment === null){
+					return;
+				}
+
+
+				this.client.send(JSON.stringify({"msgID": "REGISTER", "senderID": this.vkinfo }));
+
+				console.log(this.vkinfo);
+
+				///////////////////////////////////////
+				// Spawn IMU data-generating process
+				///////////////////////////////////////
+				this.imudata = null;
+				this.subprocessIMU = spawn('python', ['imu.py']);
+				this.setupIMUHandlers();
+
+
+				///////////////////////////////////////
+				// Spawn GPS data-generating process
+				// GPSD options: -D debug level,
+				//               -N foreground process,
+				//               -n dont wait to poll,
+				//               -S port
+				///////////////////////////////////////
+				this.gpsdata = null;
+				this.subprocessGPS = spawn('gpsd', ['-D5', '-N', '-n', '-S3000', '/dev/serial0']);
+				this.gps = new Gpsd({
+					port: 3000 ,              // default
+					hostname: 'localhost',   // default
+					parse: true
+				});
+				this.setupGPSHandlers();
+
+
+
+				console.log("GPS client started")
 			});
-			this.setupGPSHandlers();
 
-
-
-			console.log("GPS client started")
 		});
-	}
+	};
 
 	setupIMUHandlers() {
 		let subprocessIMU = this.subprocessIMU;
 		let imudata = this.imudata;
-		let vkindo = this.vkinfo;
+		let vkinfo = this.vkinfo;
 		let client = this.client;
 
 		subprocessIMU.stderr.on("data", (data) => {
@@ -80,7 +91,7 @@ class GPSClient {
 
 		subprocessIMU.stdout.on("data", (data) => {
 			data = JSON.parse(data.toString());
-			imudata = {"id": "IMU", "vkinfo": vkinfo, "fields": data};
+			imudata = {"msgID": "IMU", "senderID": vkinfo, "fields": data};
 			// client.send(JSON.stringify(imudata));
 			client.send(JSON.stringify(imudata));
 			//console.log(`stdout:\n${data}`);
@@ -119,7 +130,7 @@ class GPSClient {
 		gps.on('TPV', data => {
 			//console.log(data);
 			//data = JSON.parse(data.toString());
-			gpsdata = {"id": "GPS", "vkinfo": vkinfo, "fields": data};
+			gpsdata = {"msgID": "GPS", "senderID": vkinfo, "fields": data};
 			client.send(JSON.stringify(gpsdata));
 			//console.log(data)
 		});
@@ -133,11 +144,11 @@ class GPSClient {
 				'Content-Type': 'application/x-www-form-urlencoded',
 				//'Content-Type': 'application/json',
 			},
-			body: "vk="+this.vkinfo.VKID
+			body: "vk="+this.vkinfo.Name
 		});
 		return res.json();
 	}
 }
 
 
-let gpsclient = new GPSClient("VK01");
+let gpsclient = new GPSClient("VK01", "B7-02-BC-4A-E2-61");

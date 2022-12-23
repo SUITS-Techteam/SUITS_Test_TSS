@@ -9,8 +9,7 @@ require('dotenv').config();
 
 const server = http.createServer();
 const wss = new SocketServer.WebSocketServer({ server });
-const clients = [];
-const rooms = [];
+const clients = {};
 
 let parser = new Parser();
 let simulation = new Simulation();
@@ -40,12 +39,11 @@ getUsers().then( (users) => {
 
 wss.on('connection', (ws, req) => {
     console.log(`*** USER CONNECTED ***`);
-    let connection = { id: uuidv4() };
+	//Several types of clients: HMDs, Visionkits, EVASims, Rovers and Spectrometers
 
     // only connection message should use fully qualified JSON.
     // 'message' events should have the proper format when received.
-    let connMsg = new Event({event: 'connection', payload: connection.id});
-    clients.push(connection);
+    let connMsg = new Event({event: 'connection', payload: "waiting for REGISTER message"});
 
 	  // Sent to visionkit?
     ws.send(connMsg.stringifyMessage());
@@ -110,10 +108,36 @@ wss.on('connection', (ws, req) => {
 			data = JSON.parse(data.toString('utf-8'));
 	    console.log(data);
 
-			let msgtype = data.id;
+			let msgtype = data.msgID;
 			let msgdata = data.fields;
-			let msginfo = data.vkinfo;
+			let msginfo = data.senderID;
 
+			if(!msginfo || !msgtype) {
+				//Do not handle unidentified messages
+				return;
+			}
+			////////////////////////////////////////////////
+			//Messages from ALLCLIENTS
+			///////////////////////////////////////////////
+			if (msgtype === "REGISTER") {
+				console.log(clients)
+				console.log("CLIENT is registering")
+				//Several types of clients: HMDs, Visionkits, EVASims, Rovers and Spectrometers
+				clients[msginfo.MacAddress] = msginfo;
+				let ulist = await getUsers();
+				console.log(userlist);
+				return;
+			}
+
+			////////////////////////////////////////////////
+			//Messages from HMD/ROVER/SPECTROMETER
+			///////////////////////////////////////////////
+
+			//TODO
+
+			////////////////////////////////////////////////
+			//Messages from VISIONKIT
+			///////////////////////////////////////////////
 			if (msgtype === "IMU") {
 				parser.parseMessageIMU(msgdata, models).then((parsedmsg) => {
 
@@ -137,6 +161,9 @@ wss.on('connection', (ws, req) => {
 				return;
 			}
 
+			////////////////////////////////////////////////
+			//Messages from EVASIM
+			///////////////////////////////////////////////
 			if( msgtype === "EVA") {
 				console.log(`** GOT EVAMESSAGE **`);
 				if(data.execute === "command") {
@@ -152,7 +179,14 @@ wss.on('connection', (ws, req) => {
 					let ret_data = await simulation.failureSim( msgdata.room, msgdata.failure);
 					ws.send(JSON.stringify(ret_data));
 				}
-
+				if(data.execute === "getall") {
+					let ret_data = await simulation.getAllState();
+					ws.send(JSON.stringify(ret_data));
+				}
+				if(data.execute === "getbyroomid") {
+					let ret_data = await simulation.getByRoomId(msgdata.room);
+					ws.send(JSON.stringify(ret_data));
+				}
 			}
 	});
 

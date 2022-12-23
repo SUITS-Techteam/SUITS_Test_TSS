@@ -24,6 +24,10 @@ module.exports = (sequelize) => {
 		assignment: {
 			allowNull: true,
 			type: DataTypes.STRING
+		},
+		macaddress: {
+			allowNull: false,
+			type: DataTypes.STRING
 		}
 	});
 };

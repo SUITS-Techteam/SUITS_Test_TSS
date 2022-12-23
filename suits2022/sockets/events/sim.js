@@ -139,6 +139,28 @@ class Simulation {
 		return { ok: true, failures: simInst.failure};
 	}
 
+	async getByRoomId(room) {
+		const id = room;
+		const simulationstates = await models.simulationstate.findAll({where: {room: id}});
+		const simulationcontrols = await models.simulationcontrol.findAll({where: {room: id}});
+		const simulationfailures = await models.simulationfailure.findAll({where: {room:id}});
+		const simulationuias = await models.simulationuia.findAll({where: {room:id}});
+		const simulationstateuias = await models.simulationstateuia.findAll({where: {room:id}});
+		let data  = { simulationstates, simulationcontrols, simulationfailures, simulationuias, simulationstateuias};
+			return { ok: true, all: data};
+	};
+
+	async getAllState() {
+		const simulationcontrols = await models.simulationcontrol.findAll();
+		const simulationstates = await models.simulationstate.findAll();
+		const simulationfailures = await models.simulationfailure.findAll();
+		const simulationuias = await models.simulationuia.findAll();
+		const simulationstateuias = await models.simulationstateuia.findAll();
+		return { ok: true, simuias: simulationuias,
+						 simstateuias: simulationstateuias,
+						 simcontl: simulationcontrols,
+						 simfails: simulationfailures, simstates: simulationstates};
+	};
 }
 
 module.exports = Simulation;
