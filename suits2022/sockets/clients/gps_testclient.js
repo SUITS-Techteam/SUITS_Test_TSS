@@ -8,7 +8,7 @@ ws.on('open', (d) => {
 	console.log("opened");
 	console.log(ws.readyState)
 
-	let data = fs.readFileSync(pth.join(__dirname + "/clients","testdata"));
+	let data = fs.readFileSync(pth.join(__dirname,"testdata2"));
 	let data2 = data.toString().split("\n");
 	for(let each of data2) {
 		try {

@@ -1,7 +1,6 @@
 const { models } = require('../../sequelize');
 //const { getIdParam } = require('../helpers');
 const  EVASimulation  = require('../../simulations/evasimulation');
-console.log(EVASimulation)
 
 class Simulation {
 	constructor() {
