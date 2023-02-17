@@ -27,8 +27,12 @@ const events = {
 }
 
 const { models } = require('../sequelize');
+const imumsgModel = require('../sequelize/models/imumsg.model');
+const simulationstateModel = require('../sequelize/models/simulationstate.model');
 async function getUsers() {
 	const userData = await models.user.findAll();
+
+	
 	return userData;
 }
 
@@ -40,7 +44,7 @@ wss.on('connection', (ws, req) => {
 			console.log(`** GOT MESSAGE **`);
 
 			data = JSON.parse(data.toString('utf-8'));
-	    	console.log(data);
+	    	//console.log(data);
 
 			let msgtype = data.MSGTYPE;
 			let blob = data.BLOB;
@@ -135,7 +139,7 @@ wss.on('connection', (ws, req) => {
 
 					if(parsedmsg)
 						//Store message to push and guid/room to push to
-						imu_msgs_array.push([parsedmsg, selected_user]);
+						imu_msgs_array.push([parsedmsg]);
 					});
 
 					break;
@@ -144,7 +148,7 @@ wss.on('connection', (ws, req) => {
 					parser.parseMessageGPS(msgdata,models).then( (parsedmsg) => {
 
 					if(parsedmsg)
-						gps_msgs_array.push([parsedmsg, selected_user] );
+						gps_msgs_array.push([parsedmsg] );
 					});
 
 					break;
@@ -158,7 +162,16 @@ wss.on('connection', (ws, req) => {
 					let ret_data = await simulation.getByRoomId(room);
 					//ws.send(JSON.stringify(ret_data));
 					eva_msgs_array.push([ret_data]);
-					
+
+					models.simulationstate.findBy({where : {
+						 id: 1
+						}
+					}).then(msg => {
+						console.log(msg);
+						console.log('88888888888888888888');
+					})
+
+
 					break;
 			}
 
@@ -176,7 +189,24 @@ wss.on('connection', (ws, req) => {
     ws.send(connMsg.stringifyMessage());
 	console.log(connMsg.stringifyMessage());
 
-		setInterval(sendDataChunk, HMD_UPDATE_INTERVAL);
+	setInterval(async function() {
+		try {
+		  //const gps_val = await models.gpsmsgs.findAll({ where: { column1: 1 }});
+		  
+		  const data = {
+			//gpsmsgs: gps_val,
+			imumsgs: imu_val,
+			simulationstates: telem_val
+		  };
+	
+		  ws.send(JSON.stringify(data));
+		} catch (err) {
+		  console.error('Error:', err);
+		}
+	}, 2000);
+
+		//setInterval(sendDataChunk, HMD_UPDATE_INTERVAL);
+
 		function sendDataChunk() {
 
 			// let connectedClients = Object.keys(clients);
