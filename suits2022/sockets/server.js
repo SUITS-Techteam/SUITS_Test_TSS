@@ -11,12 +11,10 @@ const server = http.createServer();
 const wss = new SocketServer.WebSocketServer({ server });
 const clients = {};
 
-
-
 let parser = new Parser();
 let simulation = new Simulation();
 
-const HMD_UPDATE_INTERVAL = 5000; //Milliseconds
+const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 
 let datenow = Date.now();
 let imu_msgs_array = [];
@@ -33,22 +31,6 @@ async function getUsers() {
 	const userData = await models.user.findAll();
 	return userData;
 }
-let userlist = [];
-getUsers().then( (users) => {
-	userlist = users;
-	//console.log(userlist)
-}).catch(err => {console.log(err)});
-
-async function getDevices() {
-	const deviceData = await models.devices.findAll();
-	return deviceData;
-}
-let devicelist = [];
-getDevices().then( (devices) => {
-	devicelist = devices;
-	//console.log(devicelist)
-}).catch(err => {console.log(err)});
-
 
 wss.on('connection', (ws, req) => {
     console.log(`*** USER CONNECTED ***`);
@@ -58,11 +40,13 @@ wss.on('connection', (ws, req) => {
 			console.log(`** GOT MESSAGE **`);
 
 			data = JSON.parse(data.toString('utf-8'));
-	    console.log(data);
+	    	console.log(data);
 
 			let msgtype = data.MSGTYPE;
 			let blob = data.BLOB;
-			let macaddr = data.MACADDRESS;
+			let datatype = blob.DATATYPE;
+			let msgdata = blob.DATA;
+			let room = blob.ROOM;
 
 
 			//Client messages are always DATA
@@ -72,39 +56,39 @@ wss.on('connection', (ws, req) => {
 			}
 
 
-			//Simple mac address verification
-			if( macaddr.split("-").length !== 6) {
-				ws.send(JSON.stringify({ ERR: "MACADDRESS is invalid"}));
-				return;
-			}
+			// //Simple mac address verification
+			// if( macaddr.split("-").length !== 6) {
+			// 	ws.send(JSON.stringify({ ERR: "MACADDRESS is invalid"}));
+			// 	return;
+			// }
 
 
-			//Get device record associated with Macaddress
+			// //Get device record associated with Macaddress
 
-			let selected_device = null;
-			for(let device of devicelist) {
-				if(device.macaddress === macaddr)
-					selected_device = device;
-			}
+			// let selected_device = null;
+			// for(let device of devicelist) {
+			// 	if(device.macaddress === macaddr)
+			// 		selected_device = device;
+			// }
 
-			//Couldn't find device
-			if(!selected_device) {
-				ws.send(JSON.stringify({ ERR: "Couldn't find device."}));
-				return;
-			}
+			// //Couldn't find device
+			// if(!selected_device) {
+			// 	ws.send(JSON.stringify({ ERR: "Couldn't find device."}));
+			// 	return;
+			// }
 
-			let selected_user = null;
-			for(let user of userlist) {
-				if(user.guid === selected_device.guid)
-					selected_user = user;
-			}
+			// let selected_user = null;
+			// for(let user of userlist) {
+			// 	if(user.guid === selected_device.guid)
+			// 		selected_user = user;
+			// }
 
-			console.log(selected_user);
+			// console.log(selected_user);
 
-			if(!selected_user) {
-				ws.send(JSON.stringify({ ERR: "Couldn't find user associated with device."}));
-				return;
-			}
+			// if(!selected_user) {
+			// 	ws.send(JSON.stringify({ ERR: "Couldn't find user associated with device."}));
+			// 	return;
+			// }
 			////////////////////////////////////////////////
 			//Messages from ALLCLIENTS
 			///////////////////////////////////////////////
@@ -118,10 +102,6 @@ wss.on('connection', (ws, req) => {
 				return;
 			}*/
 
-
-			let datatype = blob.DATATYPE;
-			let msgdata = blob.DATA;
-
 			switch(datatype) {
 				////////////////////////////////////////////////
 				//Messages from HMD/ROVER/SPECTROMETER
@@ -132,10 +112,16 @@ wss.on('connection', (ws, req) => {
 					console.log(selected_user)
 					clients[selected_user.guid] = { user: selected_user, socket: ws };
 					break;
-
+				
+				////////////////////////////////////////////////
+				//Messages from ROVER
+				///////////////////////////////////////////////
 				case "RVR":
 					//TBD
 					break;
+				////////////////////////////////////////////////
+				//Messages from SPECTROMETER
+				///////////////////////////////////////////////
 				case "SPC":
 					//TBD
 					break;
@@ -166,32 +152,14 @@ wss.on('connection', (ws, req) => {
 				////////////////////////////////////////////////
 				//Messages from EVASIM
 				///////////////////////////////////////////////
-				case "EVA":
-					console.log(`** GOT EVAMESSAGE **`);
-					let data = msgdata;
-					if(data.execute === "command") {
-						let ret_data = await simulation.commandSim( msgdata.room, msgdata.event);
-						ws.send(JSON.stringify(ret_data));
-					}
-					if(data.execute === "control") {
-						let ret_data = await simulation.controlSim( msgdata.room, msgdata.control);
-						ws.send(JSON.stringify(ret_data));
-					}
-					if(data.execute === "failure") {
-						let ret_data = await simulation.failureSim( msgdata.room, msgdata.failure);
-						ws.send(JSON.stringify(ret_data));
-					}
-					if(data.execute === "getall") {
-						let ret_data = await simulation.getAllState();
-						ws.send(JSON.stringify(ret_data));
-					}
-					if(data.execute === "getbyroomid") {
-						let ret_data = await simulation.getByRoomId(msgdata.room);
-						//ws.send(JSON.stringify(ret_data));
-						if(selected_user.room === msgdata.room)
-							eva_msgs_array.push([ret_data,selected_user]);
-					}
-				break;
+				case "STUDENT":
+					console.log(`** STUDENT TEST DATA **`);
+					//let data = msgdata;
+					let ret_data = await simulation.getByRoomId(room);
+					//ws.send(JSON.stringify(ret_data));
+					eva_msgs_array.push([ret_data]);
+					
+					break;
 			}
 
 			return;
@@ -206,44 +174,46 @@ wss.on('connection', (ws, req) => {
 
 	  // Sent to visionkit?
     ws.send(connMsg.stringifyMessage());
+	console.log(connMsg.stringifyMessage());
 
 		setInterval(sendDataChunk, HMD_UPDATE_INTERVAL);
 		function sendDataChunk() {
 
-			let connectedClients = Object.keys(clients);
+			// let connectedClients = Object.keys(clients);
 
-			let connectedClientsByRoom = {};
-			for(let guid in clients) {
-				let client = clients[guid];
-				connectedClientsByRoom[ client.room ] = client;
-			}
+			// let connectedClientsByRoom = {};
+			// for(let guid in clients) {
+			// 	let client = clients[guid];
+			// 	connectedClientsByRoom[ client.room ] = client;
+			// }
 
 			//Send message data to connected, relevant clients
-			for(let clientguid of connectedClients) {
+			//for(let clientguid of connectedClients) {
 					let datachunk = {MSGTYPE: "DATACHUNK",
-													BLOB: { VK: { IMU: [], GPS: [] }, EVA: [], RVR: [], SPC: [] } };
+									 BLOB: { VK: { IMU: [], GPS: [] }, 
+									 EVA: [], RVR: [], SPC: [] } };
 
 					for(const each of imu_msgs_array) {
 						let parsedmsg = each[0];
-						let user = each[1];
-						let msgguid = user.guid;
-						if(clientguid == msgguid)
+						// let user = each[1];
+						// let msgguid = user.guid;
+						// if(clientguid == msgguid)
 							datachunk.BLOB.VK.IMU.push(parsedmsg);
 					}
 
 					for(const each of gps_msgs_array) {
 						let parsedmsg = each[0];
-						let user = each[1];
-						let msgguid = user.guid;
-						if(clientguid == msgguid)
+						// let user = each[1];
+						// let msgguid = user.guid;
+						// if(clientguid == msgguid)
 							datachunk.BLOB.VK.GPS.push(parsedmsg);
 					}
 
 					for(const each of eva_msgs_array) {
 						let parsedmsg = each[0];
-						let user = each[1];
-						let msgguid = user.guid;
-						if(clientguid == msgguid)
+						// let user = each[1];
+						// let msgguid = user.guid;
+						// if(clientguid == msgguid)
 							datachunk.BLOB.EVA.push(parsedmsg);
 					}
 
@@ -251,20 +221,20 @@ wss.on('connection', (ws, req) => {
 
 					console.log("Chunk send");
 					console.log(datachunk);
-				console.log(clients, clientguid);
-					clients[clientguid].socket.send(JSON.stringify(datachunk));
+				//console.log(clients, clientguid);
+					ws.send(JSON.stringify(datachunk));
 					console.log("Data pushed.");
-				}
+				//}
 
 	    //Reset data arrays
 			imu_msgs_array = [];
 			gps_msgs_array = [];
 			eva_msgs_array = [];
 
-			//if( Object.keys(datachunk).length === 0)
-				//console.log("No data to push.");
+			if( Object.keys(datachunk).length === 0)
+				console.log("No data to push.");
 
-			}
+		}
 
 });
 
