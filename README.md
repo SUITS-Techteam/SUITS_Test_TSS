@@ -54,3 +54,6 @@ your server host IP.
    Then update the SUITS_TSSHOST to your server host IP address. 
 4. Now restart your VK. If your server is running and your SUITS_TSSHOST address is correct your VK should automatically start sending GPS data 
    to the server!
+
+##THINGS TO NOTE
+This is not the final version of the TSS, we are making changes to prepare for test week. The final version of the TSS will require you to register via your HMD. You will provid information like Team Name, University, etc. This version of the TSS is to get you the data you will be working with come test week. Feel free to ask any questions!
