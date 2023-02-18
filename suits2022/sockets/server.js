@@ -9,14 +9,12 @@ const envPath = path.join(__dirname, '../', '.env');
 dotenv.config({ path: envPath });
 
 const SOCKET_PORT = process.env.SOCKET_PORT;
-
 const server = http.createServer();
 const wss = new SocketServer.WebSocketServer({ server });
-
-let parser = new Parser();
-
 const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 const { models } = require('../sequelize');
+
+let parser = new Parser();
 
 wss.on('connection', (ws, req) => {
     console.log(`*** USER CONNECTED ***`);

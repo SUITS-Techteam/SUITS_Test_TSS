@@ -9,7 +9,4 @@ ws.on('message', (d) => {
 	console.log("opened");
 	console.log(ws.readyState)
 	console.log(d.toString())
-
-	let msg = {"MSGTYPE": "DATA", "BLOB": { DATATYPE: "STUDENT", ROOM: room, DATA: null}};
-	ws.send(JSON.stringify(msg));
 });
