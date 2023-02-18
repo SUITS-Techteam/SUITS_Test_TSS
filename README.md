@@ -35,8 +35,22 @@
     * Your Websockets server should now be running
 
 2. Power up your VISION Kit
-    * If you haven't already, be sure to change the host URL in your VISION Kit.
+    * If you haven't already, be sure to change the host URL in your VISION Kit (see VISION Kit Setup below).  
     * If everything is connected correctly, you will begin generating data from your VISION Kit, and it will be sent to the server.
 
 3. To test if you are receiving data correctly, run `node sockets/clients/test_client.js`
     * You should see the full JSON chunk being generated.
+    
+## VISION Kit Setup
+
+Once you have your test environment set up and you server host established you will need to go into your VK and change the SUITS_TSSHOST to 
+your server host IP. 
+
+1. You will need to connect a monitor and keyboard to your VK. 
+2. You will need to enter your wifi credentials 
+3. In order to update the SUITS_TSSHOST enter the following command: 
+   cd TSS_Client
+   nano .env
+   Then update the SUITS_TSSHOST to your server host IP address. 
+4. Now restart your VK. If your server is running and your SUITS_TSSHOST address is correct your VK should automatically start sending GPS data 
+   to the server!
