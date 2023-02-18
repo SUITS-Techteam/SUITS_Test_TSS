@@ -2,8 +2,13 @@ const http = require('http');
 const SocketServer = require('ws');
 const Parser = require('./events/parser');
 const Event = require('./events/event');
+const dotenv = require('dotenv');
+const path = require('path');
 
-require('dotenv').config();
+const envPath = path.join(__dirname, '../', '.env');
+dotenv.config({ path: envPath });
+
+const SOCKET_PORT = process.env.SOCKET_PORT;
 
 const server = http.createServer();
 const wss = new SocketServer.WebSocketServer({ server });
@@ -73,8 +78,8 @@ wss.on('connection', (ws, req) => {
 	}, HMD_UPDATE_INTERVAL);
 });
 
-server.listen(process.env.SOCKET_PORT, () => {
-   console.log(`SUITS Socket Server listening on: ${process.env.SOCKET_PORT}`);
+server.listen(SOCKET_PORT, () => {
+   console.log(`SUITS Socket Server listening on: ${SOCKET_PORT}`);
 
 	//const wsclient = new SocketServer.WebSocket('ws://localhost:' + process.env.SOCKET_PORT);
 

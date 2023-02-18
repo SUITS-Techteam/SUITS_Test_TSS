@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 const { applyExtraSetup } = require('./extra-setup');
-const dotenv = require('dotenv')
+const dotenv = require('dotenv');
 const path = require('path');
 
 const envPath = path.join(__dirname, '../', '.env');
