@@ -7,58 +7,58 @@ module.exports = (sequelize) => {
 		// The following specification of the 'id' attribute could be omitted
 		// since it is the default.
 		id: {
-			allowNull: false,
+			allowNull: true,
 			autoIncrement: true,
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
 		heading: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		accel_x: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		accel_y: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		accel_z: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		gyro_x: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		gyro_y: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		gyro_z: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		mag_x: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		mag_y: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		},
 		mag_z: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
 			unique: false
 		}

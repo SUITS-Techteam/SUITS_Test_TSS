@@ -1,10 +1,12 @@
 const { Sequelize } = require('sequelize');
 const { applyExtraSetup } = require('./extra-setup');
-
+const dotenv = require('dotenv')
 const path = require('path');
-const appDir = path.resolve(process.cwd());
 
-const dbPath = path.join(appDir, 'suitsdb', 'suits.sqlite');
+const envPath = path.join(__dirname, '../', '.env');
+dotenv.config({ path: envPath });
+
+const dbPath = process.env.DB_PATH;
 
 console.log(`DB Path: ${dbPath}`);
 // In a real app, you should keep the database connection URL as an environment variable.

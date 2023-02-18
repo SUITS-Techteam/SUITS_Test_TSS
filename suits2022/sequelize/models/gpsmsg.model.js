@@ -13,85 +13,96 @@ module.exports = (sequelize) => {
 			primaryKey: true,
 			type: DataTypes.INTEGER
 		},
-		class: {
-			allowNull: false,
-			type: DataTypes.STRING,
-			unique: false
-		},
 		device: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.STRING,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		mode: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.INTEGER,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		time: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.STRING,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		ept: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		lat: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		lon: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		alt: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		epx: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		epy: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		epv: {
-			allowNull: false,
+			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		track: {
 			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		speed: {
 			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		climb: {
 			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 		eps: {
 			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
+			
 		},
 		epc: {
 			allowNull: true,
 			type: DataTypes.DOUBLE,
-			unique: false
+			unique: false,
+			defaultValue: null
 		},
 	});
 };

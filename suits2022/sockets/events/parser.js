@@ -13,27 +13,56 @@ class Parser {
 	}
 
   async parseMessageIMU(obj, models) {
-		for(const elem in obj)
-			if(elem === "id")
-				delete obj[elem];
-		  else
-				obj[elem] = parseFloat(obj[elem]);
+	const imumsg = await models.imumsg;
 
+	for(const elem in obj)
+		if(elem === "id")
+			delete obj[elem];
+		else
+			obj[elem] = parseFloat(obj[elem]);
+			
 	  try{
-		const imumsg = await models.imumsg.create(obj);
-    		return imumsg;
+		
+		if(await models.imumsg.count() === 0)
+		{
+			imumsg.create(obj);
+		}
+		else
+		{
+			imumsg.update(obj, {
+				where: { id: 1 }, 
+			});
+		}
+		return imumsg;
+    		
 	  } catch(e) {
 		  console.log(e);
 		  return null;
 	  }
-
-
   }
 
   async parseMessageGPS(obj, models) {
+	const gpsmsg = await models.gpsmsg;
+
+	for(const elem in obj)
+		if(elem === "class")
+			delete obj[elem];
+		else
+			obj[elem] = parseFloat(obj[elem]);
+	
 	  try{
-		const gpsmsg = await models.gpsmsg.create(obj);
-    		return gpsmsg;
+		if(await models.gpsmsg.count() == 0)
+		{
+			console.log("GPS TABLE CREATED");
+			gpsmsg.create(obj);
+		}
+		else
+		{
+			gpsmsg.update(obj, {
+				where: { id: 1 }, 
+			});
+		}
+		return gpsmsg;
 	  } catch(e) {
 		  console.log(e);
 		  return null;
