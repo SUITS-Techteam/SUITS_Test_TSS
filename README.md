@@ -10,14 +10,14 @@
 1. From the root directory, run `node sqlite-example-database/setup.js`
     * You should see this message: 
     ```
-    DB Path: C:/Users/Geraldo/SUITS/TSS-Legacy/suits2022/suitsdb/suits.sqlite
+    DB Path: suitsdb/suits.sqlite
     Will rewrite the SQLite example database, adding some dummy data.
     Done!
     ```
 2. Now run `index.js`
     * You should see this message:
     ```
-    DB Path: C:/Users/Geraldo/SUITS/TSS-Legacy/suits2022/suitsdb/suits.sqlite
+    DB Path: suitsdb/suits.sqlite
     C:\Users\Geraldo\SUITS\TSS-Legacy\suits2022\express
     API PORT: 8080
     SOCKET PORT: 3001
