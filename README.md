@@ -57,8 +57,11 @@ $ git clone https://github.com/SUITS-Techteam/SUITS_Test_TSS.git
 2. Navigate to: ```System Options > Wireless LAN ```
 3. Enter your WiFi's SSID
 4. Enter your WiFi's Passphrase
-5. Reboot your VISION Kit
-6. You should now be able to connect to your network
+5. Reboot your VISION Kit: 
+	``` bash
+    sudo reboot
+    ```
+7. You should now be able to connect to your network
 
 ### Updating Host IP
 Once you have your test environment set up and your server host established you will need to go into your VK and change the SUITS_TSSHOST environment variable to 
