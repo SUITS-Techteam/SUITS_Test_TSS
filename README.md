@@ -49,7 +49,7 @@ $ git clone https://github.com/SUITS-Techteam/SUITS_Test_TSS.git
     * If everything is connected correctly, you will begin generating data from your VISION Kit, and it will be sent to the server.
 
 ## VISION Kit Setup
-# Adding Network to VISION Kit
+### Adding Network to VISION Kit
 1. Enter the following command: 
 	``` bash
 	sudo raspi-config
@@ -60,7 +60,7 @@ $ git clone https://github.com/SUITS-Techteam/SUITS_Test_TSS.git
 5. Reboot your VISION Kit
 6. You should now be able to connect to your network
 
-# Updating Host IP
+### Updating Host IP
 Once you have your test environment set up and your server host established you will need to go into your VK and change the SUITS_TSSHOST environment variable to 
 your server host IP. 
 
