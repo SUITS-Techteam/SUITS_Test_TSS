@@ -49,9 +49,13 @@ your server host IP.
 1. You will need to connect a monitor and keyboard to your VK. 
 2. You will need to enter your wifi credentials 
 3. In order to update the SUITS_TSSHOST enter the following command: 
+   ```
    cd TSS_Client
    nano .env
-   Then update the SUITS_TSSHOST to your server host IP address. 
+   ```
+   Update the ```SUITS_TSSHOST=``` to your server host IP address. 
+   Press Ctrl + o to save then Ctrl + x to exit
+   
 4. Now restart your VK. If your server is running and your SUITS_TSSHOST address is correct your VK should automatically start sending GPS data 
    to the server!
 
