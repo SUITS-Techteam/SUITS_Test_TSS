@@ -13,6 +13,7 @@ const server = http.createServer();
 const wss = new SocketServer.WebSocketServer({ server });
 const HMD_UPDATE_INTERVAL = 2000; //Milliseconds
 const { models } = require('../sequelize');
+const room_id = 1;
 
 let parser = new Parser();
 
@@ -59,14 +60,18 @@ wss.on('connection', (ws, req) => {
 
 	setInterval(async function() {
 		try {
-		  gps_val = await models.gpsmsg.findAll({ where: { id: 1 }});
-		  imu_val = await models.imumsg.findAll({ where: { id: 1 }});
-		  telem_val = await models.simulationstate.findAll({ where: { id: 1 }});
+		  gps_val = await models.gpsmsg.findAll({ where: { id: room_id }});
+		  imu_val = await models.imumsg.findAll({ where: { id: room_id }});
+		  uia_val = await models.simulationstateuia.findAll({where: {id: room_id}});
+		  uia_control_val = await models.simulationuia.findAll({where: {id: room_id}});
+		  telem_val = await models.simulationstate.findAll({ where: { id: room_id }});
 		  
 		  const data = {
-			gpsmsgs: gps_val,
-			imumsgs: imu_val,
-			simulationstates: telem_val
+			GPS: gps_val,
+			IMU: imu_val,
+			EVA: telem_val,
+			UIA: uia_control_val,
+			UIA_CONTROLS: uia_val
 		  };
 	
 		  ws.send(JSON.stringify(data));
